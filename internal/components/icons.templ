@@ -1,0 +1,163 @@
+package components
+
+// Icon renders stroke icons from the Feather icon set (MIT licensed paths).
+// One consistent family, standardized stroke width and currentColor.
+templ Icon(name string, size int) {
+	<svg class="icon" width={ size } height={ size } viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+		switch name {
+			case "home":
+				<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+				<polyline points="9 22 9 12 15 12 15 22"/>
+			case "users":
+				<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+				<circle cx="9" cy="7" r="4"/>
+				<path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+				<path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+			case "user":
+				<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+				<circle cx="12" cy="7" r="4"/>
+			case "sliders":
+				<line x1="4" y1="21" x2="4" y2="14"/>
+				<line x1="4" y1="10" x2="4" y2="3"/>
+				<line x1="12" y1="21" x2="12" y2="12"/>
+				<line x1="12" y1="8" x2="12" y2="3"/>
+				<line x1="20" y1="21" x2="20" y2="16"/>
+				<line x1="20" y1="12" x2="20" y2="3"/>
+				<line x1="1" y1="14" x2="7" y2="14"/>
+				<line x1="9" y1="8" x2="15" y2="8"/>
+				<line x1="17" y1="16" x2="23" y2="16"/>
+			case "logout":
+				<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+				<polyline points="16 17 21 12 16 7"/>
+				<line x1="21" y1="12" x2="9" y2="12"/>
+			case "menu":
+				<line x1="3" y1="12" x2="21" y2="12"/>
+				<line x1="3" y1="6" x2="21" y2="6"/>
+				<line x1="3" y1="18" x2="21" y2="18"/>
+			case "x":
+				<line x1="18" y1="6" x2="6" y2="18"/>
+				<line x1="6" y1="6" x2="18" y2="18"/>
+			case "chevron-down":
+				<polyline points="6 9 12 15 18 9"/>
+			case "arrow-right":
+				<line x1="5" y1="12" x2="19" y2="12"/>
+				<polyline points="12 5 19 12 12 19"/>
+			case "check":
+				<polyline points="20 6 9 17 4 12"/>
+			case "plus":
+				<line x1="12" y1="5" x2="12" y2="19"/>
+				<line x1="5" y1="12" x2="19" y2="12"/>
+			case "sun":
+				<circle cx="12" cy="12" r="5"/>
+				<line x1="12" y1="1" x2="12" y2="3"/>
+				<line x1="12" y1="21" x2="12" y2="23"/>
+				<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+				<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+				<line x1="1" y1="12" x2="3" y2="12"/>
+				<line x1="21" y1="12" x2="23" y2="12"/>
+				<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+				<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+			case "moon":
+				<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+			case "shield":
+				<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+			case "shield-check":
+				<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+				<polyline points="9 11.5 11 13.5 15 9.5"/>
+			case "lock":
+				<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+				<path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+			case "key":
+				<path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+			case "mail":
+				<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+				<polyline points="22,6 12,13 2,6"/>
+			case "database":
+				<ellipse cx="12" cy="5" rx="9" ry="3"/>
+				<path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+				<path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+			case "zap":
+				<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+			case "activity":
+				<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+			case "clock":
+				<circle cx="12" cy="12" r="10"/>
+				<polyline points="12 6 12 12 16 14"/>
+			case "alert":
+				<circle cx="12" cy="12" r="10"/>
+				<line x1="12" y1="8" x2="12" y2="12"/>
+				<line x1="12" y1="16" x2="12.01" y2="16"/>
+			case "eye":
+				<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+				<circle cx="12" cy="12" r="3"/>
+			case "eye-off":
+				<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+				<line x1="1" y1="1" x2="23" y2="23"/>
+			case "trash":
+				<polyline points="3 6 5 6 21 6"/>
+				<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+			case "layers":
+				<polygon points="12 2 2 7 12 12 22 7 12 2"/>
+				<polyline points="2 17 12 22 22 17"/>
+				<polyline points="2 12 12 17 22 12"/>
+			case "code":
+				<polyline points="16 18 22 12 16 6"/>
+				<polyline points="8 6 2 12 8 18"/>
+			case "terminal":
+				<polyline points="4 17 10 11 4 5"/>
+				<line x1="12" y1="19" x2="20" y2="19"/>
+			case "droplet":
+				<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
+			case "github":
+				<path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+			default:
+				<circle cx="12" cy="12" r="9"/>
+		}
+	</svg>
+}
+
+// BrandMark is the bara logo: a red rounded square with a flame glyph.
+templ BrandMark(size int) {
+	<svg width={ size } height={ size } viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
+		<defs>
+			<linearGradient id="bara-grad" x1="8" y1="4" x2="56" y2="60" gradientUnits="userSpaceOnUse">
+				<stop stop-color="#ef4444"/>
+				<stop offset="1" stop-color="#991b1b"/>
+			</linearGradient>
+		</defs>
+		<rect width="64" height="64" rx="16" fill="url(#bara-grad)"/>
+		<path d="M32 11c9.5 7.4 15.2 15 15.2 23.4A15.2 15.2 0 1 1 16.8 34.4c0-5.5 2.3-10 6.3-14.4.5 4.3 2.4 7.3 5.5 9-1.4-6.3-.1-12.4 3.4-18z" fill="#fff"/>
+	</svg>
+}
+
+// Stack logos. Go, PostgreSQL and SQLite use the official Simple Icons marks
+// (CC0). GORM and Templ have no official mark in the set, so they use simple
+// monograms drawn in the same visual language.
+
+templ LogoGo(size int) {
+	<svg width={ size } height={ size } viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d={ logoGoPath }/></svg>
+}
+
+templ LogoPostgres(size int) {
+	<svg width={ size } height={ size } viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d={ logoPostgresqlPath }/></svg>
+}
+
+templ LogoSQLite(size int) {
+	<svg width={ size } height={ size } viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d={ logoSqlitePath }/></svg>
+}
+
+templ LogoGorm(size int) {
+	<svg class="icon" width={ size } height={ size } viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+		<ellipse cx="12" cy="5" rx="8" ry="3"/>
+		<path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/>
+		<path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/>
+	</svg>
+}
+
+templ LogoTempl(size int) {
+	<svg class="icon" width={ size } height={ size } viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+		<polyline points="8 5 3 12 8 19"/>
+		<polyline points="16 5 21 12 16 19"/>
+		<line x1="13.5" y1="4" x2="10.5" y2="20"/>
+	</svg>
+}

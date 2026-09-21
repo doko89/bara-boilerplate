@@ -1,0 +1,237 @@
+/* ==========================================================================
+   auth.css — asymmetric split layout for login / register / forgot / reset.
+   Brand panel keeps a deep, red-tinted look in both themes (documented
+   exception to the theme lock: one deliberate brand surface).
+   ========================================================================== */
+
+.auth {
+	display: grid;
+	grid-template-columns: minmax(0, 11fr) minmax(0, 9fr);
+	min-height: 100dvh;
+}
+
+.auth-panel {
+	position: relative;
+	display: flex;
+	overflow: hidden;
+	background: #171010;
+	color: #f6f2f0;
+}
+
+.auth .shape-sq {
+	top: 12%;
+	right: 14%;
+}
+
+.auth .shape-ring {
+	bottom: 10%;
+	right: 34%;
+}
+
+.auth .shape-dot {
+	top: 55%;
+	right: 8%;
+}
+
+.auth-panel-inner {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	gap: 40px;
+	width: 100%;
+	padding: 40px 48px;
+}
+
+.brand-panel {
+	color: #ffffff;
+}
+
+.auth-panel-mid {
+	display: grid;
+	gap: 18px;
+	max-width: 46ch;
+}
+
+.auth-panel-title {
+	font-size: clamp(28px, 3vw, 38px);
+	font-weight: 800;
+	line-height: 1.15;
+	letter-spacing: -0.03em;
+}
+
+.auth-panel-text {
+	font-size: 16px;
+	line-height: 1.65;
+	color: rgba(246, 242, 240, 0.72);
+}
+
+.auth-panel-list {
+	display: grid;
+	gap: 14px;
+	margin-top: 10px;
+}
+
+.auth-panel-list li {
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	font-size: 14.5px;
+	color: rgba(246, 242, 240, 0.85);
+}
+
+.panel-list-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	flex-shrink: 0;
+	border: 1px solid rgba(239, 68, 68, 0.3);
+	border-radius: 9px;
+	background: rgba(239, 68, 68, 0.16);
+	color: #f87171;
+}
+
+.auth-panel-foot {
+	font-size: 13.5px;
+	color: rgba(246, 242, 240, 0.5);
+}
+
+/* ---------- Form side ---------- */
+
+.auth-main {
+	display: flex;
+	flex-direction: column;
+	padding: 24px 32px 48px;
+}
+
+.auth-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.brand-sm {
+	display: none;
+}
+
+.auth-top-actions {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+	margin-left: auto;
+}
+
+.auth-card-wrap {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 32px 0;
+}
+
+.auth-card {
+	display: grid;
+	gap: 18px;
+	width: 100%;
+	max-width: 400px;
+}
+
+.auth-card-head {
+	display: grid;
+	gap: 6px;
+}
+
+.auth-title {
+	font-size: 26px;
+	font-weight: 800;
+	letter-spacing: -0.02em;
+	line-height: 1.2;
+}
+
+.auth-sub {
+	font-size: 15px;
+	color: var(--text-muted);
+}
+
+.auth-state {
+	text-align: left;
+}
+
+.auth-state-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 46px;
+	height: 46px;
+	border: 1px solid var(--primary-soft-border);
+	border-radius: 14px;
+	background: var(--primary-soft);
+	color: var(--primary);
+}
+
+.auth-between {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: -6px;
+}
+
+.auth-switch {
+	font-size: 14.5px;
+	color: var(--text-muted);
+	text-align: center;
+}
+
+.auth-switch a {
+	font-weight: 600;
+	color: var(--primary);
+}
+
+.auth-switch a:hover {
+	text-decoration: underline;
+}
+
+.demo-hint {
+	display: grid;
+	gap: 6px;
+	padding: 14px 16px;
+	border: 1px dashed var(--border-strong);
+	border-radius: 12px;
+	background: var(--surface-2);
+}
+
+.demo-hint-title {
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+}
+
+.demo-hint code {
+	font-family: var(--font-mono);
+	font-size: 13px;
+}
+
+/* ---------- Responsive: stack, drop the brand panel ---------- */
+
+@media (max-width: 900px) {
+	.auth {
+		grid-template-columns: 1fr;
+	}
+
+	.auth-panel {
+		display: none;
+	}
+
+	.brand-sm {
+		display: inline-flex;
+	}
+
+	.auth-main {
+		padding: 20px 20px 40px;
+	}
+}

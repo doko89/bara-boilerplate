@@ -1,0 +1,120 @@
+package templates
+
+import (
+	"fmt"
+
+	"boilerplate/internal/components"
+	"boilerplate/internal/domain"
+)
+
+templ UsersContent(d UsersData) {
+	@components.PageHeader("Users", "Everyone with an account.", nil)
+	if d.FlashMsg != "" {
+		@components.FlashBanner(d.FlashType, d.FlashMsg)
+	}
+	<div class="card table-card" data-reveal data-reveal-delay="1">
+		if len(d.Users) == 0 {
+			@components.EmptyState("users", "No users yet", "New accounts will appear here as soon as people register.")
+		} else {
+			<div class="table-wrap">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>User</th>
+							<th>Role</th>
+							<th>Status</th>
+							<th>Joined</th>
+							<th><span class="sr-only">Actions</span></th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, u := range d.Users {
+							<tr>
+								<td>
+									<div class="cell-user">
+										@components.Avatar(u.Initials())
+										<div class="cell-user-meta">
+											<span class="cell-user-name">{ u.Name }</span>
+											<span class="cell-user-email">{ u.Email }</span>
+										</div>
+									</div>
+								</td>
+								<td>
+									if u.IsAdmin() {
+										@components.Badge("Admin", "red")
+									} else {
+										@components.Badge("User", "gray")
+									}
+								</td>
+								<td>
+									if u.IsActive {
+										@components.Badge("Active", "green")
+									} else {
+										@components.Badge("Inactive", "gray")
+									}
+								</td>
+								<td>{ components.FormatDate(u.CreatedAt) }</td>
+								<td class="cell-actions">
+									@userActions(d, u)
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</div>
+}
+
+templ userActions(d UsersData, u domain.User) {
+	<div class="dropdown-wrap" data-dropdown>
+		<button type="button" class="icon-btn" data-dropdown-toggle aria-label={ "Actions for " + u.Name } aria-haspopup="menu" aria-expanded="false">
+			@components.Icon("chevron-down", 16)
+		</button>
+		<div class="dropdown dropdown-right" role="menu">
+			if u.ID == d.CurrentUserID {
+				<p class="dropdown-note">This is your own account. Manage it from settings.</p>
+			} else {
+				<form method="post" action={ fmt.Sprintf("/admin/users/%d/role", u.ID) }>
+					@components.CSRFField(d.CSRF)
+					if u.IsAdmin() {
+						<input type="hidden" name="role" value="user"/>
+						<button type="submit" class="dropdown-item" role="menuitem">
+							@components.Icon("user", 16)
+							<span>Demote to user</span>
+						</button>
+					} else {
+						<input type="hidden" name="role" value="admin"/>
+						<button type="submit" class="dropdown-item" role="menuitem">
+							@components.Icon("shield", 16)
+							<span>Promote to admin</span>
+						</button>
+					}
+				</form>
+				<form method="post" action={ fmt.Sprintf("/admin/users/%d/status", u.ID) }>
+					@components.CSRFField(d.CSRF)
+					if u.IsActive {
+						<input type="hidden" name="active" value="false"/>
+						<button type="submit" class="dropdown-item" role="menuitem">
+							@components.Icon("lock", 16)
+							<span>Deactivate</span>
+						</button>
+					} else {
+						<input type="hidden" name="active" value="true"/>
+						<button type="submit" class="dropdown-item" role="menuitem">
+							@components.Icon("check", 16)
+							<span>Activate</span>
+						</button>
+					}
+				</form>
+				<form method="post" action={ fmt.Sprintf("/admin/users/%d/delete", u.ID) } data-confirm={ "Delete " + u.Name + "? This can't be undone." }>
+					@components.CSRFField(d.CSRF)
+					<button type="submit" class="dropdown-item danger" role="menuitem">
+						@components.Icon("trash", 16)
+						<span>Delete user</span>
+					</button>
+				</form>
+			}
+		</div>
+	</div>
+}

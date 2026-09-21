@@ -1,0 +1,35 @@
+package templates
+
+import "boilerplate/internal/components"
+
+templ Register(d RegisterData) {
+	@components.AuthLayout(components.AuthPageData{
+		Title:      d.Title,
+		Theme:      d.Theme,
+		User:       nil,
+		CSRF:       d.CSRF,
+		PanelTitle: d.PanelTitle,
+		PanelText:  d.PanelText,
+		Content:    RegisterCard(d),
+	})
+}
+
+templ RegisterCard(d RegisterData) {
+	<div class="auth-card" data-reveal>
+		<div class="auth-card-head">
+			<h1 class="auth-title">Create your account</h1>
+			<p class="auth-sub">A couple of fields and you're in.</p>
+		</div>
+		@components.FlashBanner(d.FlashType, d.FlashMsg)
+		<form class="form" method="post" action="/register" novalidate>
+			@components.CSRFField(d.CSRF)
+			@components.TextField("name", "Full name", "name", "text", d.Name, "name", "Aulia Rahmani", d.Errors["name"])
+			@components.TextField("email", "Email", "email", "email", d.Email, "email", "you@company.com", d.Errors["email"])
+			@components.PasswordField("password", "Password", "password", "new-password", d.Errors["password"])
+			@components.PasswordField("confirm_password", "Confirm password", "confirm_password", "new-password", d.Errors["confirm_password"])
+			@components.FormError(d.Errors["form"])
+			<button type="submit" class="btn btn-primary btn-block">Create account</button>
+		</form>
+		<p class="auth-switch">Already have an account? <a href="/login">Sign in</a></p>
+	</div>
+}

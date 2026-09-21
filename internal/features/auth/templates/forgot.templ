@@ -1,0 +1,33 @@
+package templates
+
+import "boilerplate/internal/components"
+
+templ Forgot(d ForgotData) {
+	@components.AuthLayout(components.AuthPageData{
+		Title:      d.Title,
+		Theme:      d.Theme,
+		User:       nil,
+		CSRF:       d.CSRF,
+		PanelTitle: d.PanelTitle,
+		PanelText:  d.PanelText,
+		Content:    ForgotCard(d),
+	})
+}
+
+templ ForgotCard(d ForgotData) {
+	<div class="auth-card" data-reveal>
+		<div class="auth-card-head">
+			<span class="auth-state-icon">@components.Icon("mail", 20)</span>
+			<h1 class="auth-title">Reset your password</h1>
+			<p class="auth-sub">Enter the email on the account and we will send a single-use reset link.</p>
+		</div>
+		@components.FlashBanner(d.FlashType, d.FlashMsg)
+		<form class="form" method="post" action="/forgot-password" novalidate>
+			@components.CSRFField(d.CSRF)
+			@components.TextField("email", "Email", "email", "email", d.Email, "email", "you@company.com", d.Errors["email"])
+			@components.FormError(d.Errors["form"])
+			<button type="submit" class="btn btn-primary btn-block">Send reset link</button>
+		</form>
+		<p class="auth-switch">Remembered it after all? <a href="/login">Sign in</a></p>
+	</div>
+}

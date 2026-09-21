@@ -1,0 +1,43 @@
+package templates
+
+import "boilerplate/internal/components"
+
+templ Reset(d ResetData) {
+	@components.AuthLayout(components.AuthPageData{
+		Title:      d.Title,
+		Theme:      d.Theme,
+		User:       nil,
+		CSRF:       d.CSRF,
+		PanelTitle: "",
+		PanelText:  "",
+		Content:    ResetCard(d),
+	})
+}
+
+templ ResetCard(d ResetData) {
+	if d.Valid {
+		<div class="auth-card" data-reveal>
+			<div class="auth-card-head">
+				<span class="auth-state-icon">@components.Icon("key", 20)</span>
+				<h1 class="auth-title">Set a new password</h1>
+				<p class="auth-sub">Pick something at least 8 characters long. All other sessions will be signed out.</p>
+			</div>
+			<form class="form" method="post" action="/reset-password" novalidate>
+				@components.CSRFField(d.CSRF)
+				<input type="hidden" name="token" value={ d.Token }/>
+				@components.PasswordField("password", "New password", "password", "new-password", d.Errors["password"])
+				@components.PasswordField("confirm_password", "Confirm new password", "confirm_password", "new-password", d.Errors["confirm_password"])
+				@components.FormError(d.Errors["form"])
+				<button type="submit" class="btn btn-primary btn-block">Update password</button>
+			</form>
+			<p class="auth-switch">Remembered it after all? <a href="/login">Sign in</a></p>
+		</div>
+	} else {
+		<div class="auth-card auth-state" data-reveal>
+			<span class="auth-state-icon">@components.Icon("alert", 20)</span>
+			<h1 class="auth-title">This link has expired</h1>
+			<p class="auth-sub">Reset links are single-use and valid for one hour. Request a fresh one and try again.</p>
+			<a class="btn btn-primary btn-block" href="/forgot-password">Request a new link</a>
+		</div>
+	}
+}

@@ -1,0 +1,92 @@
+package templates
+
+import "boilerplate/internal/components"
+
+templ SettingsContent(d SettingsData) {
+	@components.PageHeader("Settings", "Manage your account, security and active sessions.", nil)
+	if d.FlashMsg != "" {
+		@components.FlashBanner(d.FlashType, d.FlashMsg)
+	}
+	<div class="settings-grid">
+		<section class="card" data-reveal aria-labelledby="profile-title">
+			<div class="card-head">
+				<div>
+					<h3 class="card-title" id="profile-title">Account information</h3>
+					<p class="card-sub">Your name and email identify you across the app.</p>
+				</div>
+			</div>
+			<form class="form card-pad" method="post" action="/settings/profile" novalidate>
+				@components.CSRFField(d.CSRF)
+				@components.TextField("name", "Full name", "name", "text", d.Name, "name", "", d.Errors["name"])
+				@components.TextField("email", "Email", "email", "email", d.Email, "email", "", d.Errors["email"])
+				@components.FormError(d.Errors["profile_form"])
+				<div class="form-actions">
+					<button type="submit" class="btn btn-primary">Save changes</button>
+				</div>
+			</form>
+		</section>
+
+		<section class="card" id="password" data-reveal data-reveal-delay="1" aria-labelledby="password-title">
+			<div class="card-head">
+				<div>
+					<h3 class="card-title" id="password-title">Password</h3>
+					<p class="card-sub">Changing your password signs out every other session.</p>
+				</div>
+			</div>
+			<form class="form card-pad" method="post" action="/settings/password" novalidate>
+				@components.CSRFField(d.CSRF)
+				@components.PasswordField("current_password", "Current password", "current_password", "current-password", d.Errors["current_password"])
+				@components.PasswordField("password", "New password", "password", "new-password", d.Errors["password"])
+				@components.PasswordField("confirm_password", "Confirm new password", "confirm_password", "new-password", d.Errors["confirm_password"])
+				@components.FormError(d.Errors["password_form"])
+				<div class="form-actions">
+					<button type="submit" class="btn btn-primary">Update password</button>
+				</div>
+			</form>
+		</section>
+
+		<section class="card" data-reveal data-reveal-delay="2" aria-labelledby="sessions-title">
+			<div class="card-head">
+				<div>
+					<h3 class="card-title" id="sessions-title">Active sessions</h3>
+					<p class="card-sub">Devices currently signed in to this account.</p>
+				</div>
+				if len(d.Sessions) > 1 {
+					<form method="post" action="/settings/sessions/revoke-others" data-confirm="Sign out all other sessions?">
+						@components.CSRFField(d.CSRF)
+						<button type="submit" class="btn btn-secondary btn-sm">Sign out other sessions</button>
+					</form>
+				}
+			</div>
+			if len(d.Sessions) <= 1 {
+				@components.EmptyState("monitor", "No other sessions", "You are only signed in on this device.")
+			} else {
+				<div class="session-list">
+					for _, s := range d.Sessions {
+						if s.ID == d.CurrentSessionID {
+							<div class="session-row">
+								<span class="quick-icon">@components.Icon("monitor", 16)</span>
+								<div class="session-main">
+									<span class="session-device">{ components.SessionLabel(s.UserAgent) }</span>
+									<span class="session-meta">{ s.IP }, last active { components.TimeAgo(s.LastSeenAt) }</span>
+								</div>
+								<div class="session-side">
+									@components.Badge("This device", "red")
+								</div>
+							</div>
+						} else {
+							<div class="session-row">
+								<span class="quick-icon">@components.Icon("monitor", 16)</span>
+								<div class="session-main">
+									<span class="session-device">{ components.SessionLabel(s.UserAgent) }</span>
+									<span class="session-meta">{ s.IP }, last active { components.TimeAgo(s.LastSeenAt) }</span>
+								</div>
+								<div class="session-side"></div>
+							</div>
+						}
+					}
+				</div>
+			}
+		</section>
+	</div>
+}

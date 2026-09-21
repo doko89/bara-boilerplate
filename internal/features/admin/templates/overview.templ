@@ -1,0 +1,79 @@
+package templates
+
+import (
+	"strconv"
+
+	"boilerplate/internal/components"
+)
+
+templ OverviewContent(d OverviewData) {
+	@components.PageHeader("Admin overview", "The whole workspace at a glance.", manageUsersAction())
+	if d.FlashMsg != "" {
+		@components.FlashBanner(d.FlashType, d.FlashMsg)
+	}
+	<div class="stat-grid">
+		@components.StatCard("users", "Total users", strconv.FormatInt(d.TotalUsers, 10), "All accounts, any status", strconv.FormatInt(d.TotalUsers, 10), 0)
+		@components.StatCard("activity", "Active sessions", strconv.FormatInt(d.ActiveSessions, 10), "Signed in right now", strconv.FormatInt(d.ActiveSessions, 10), 1)
+		@components.StatCard("plus", "New this week", strconv.FormatInt(d.NewThisWeek, 10), "Accounts created in 7 days", strconv.FormatInt(d.NewThisWeek, 10), 2)
+		@components.StatCard("shield", "Admins", strconv.FormatInt(d.Admins, 10), strconv.FormatInt(d.ActiveUsers, 10)+" active users total", strconv.FormatInt(d.Admins, 10), 3)
+	</div>
+	<div class="card table-card" data-reveal data-reveal-delay="2">
+		<div class="card-head">
+			<div>
+				<h3 class="card-title">Latest signups</h3>
+				<p class="card-sub">Newest accounts first.</p>
+			</div>
+			<a class="btn btn-secondary btn-sm" href="/admin/users">Manage users</a>
+		</div>
+		if len(d.RecentUsers) == 0 {
+			@components.EmptyState("users", "No users yet", "New accounts will appear here as soon as people register.")
+		} else {
+			<div class="table-wrap">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>User</th>
+							<th>Role</th>
+							<th>Status</th>
+							<th>Joined</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, u := range d.RecentUsers {
+							<tr>
+								<td>
+									<div class="cell-user">
+										@components.Avatar(u.Initials())
+										<div class="cell-user-meta">
+											<span class="cell-user-name">{ u.Name }</span>
+											<span class="cell-user-email">{ u.Email }</span>
+										</div>
+									</div>
+								</td>
+								<td>
+									if u.IsAdmin() {
+										@components.Badge("Admin", "red")
+									} else {
+										@components.Badge("User", "gray")
+									}
+								</td>
+								<td>
+									if u.IsActive {
+										@components.Badge("Active", "green")
+									} else {
+										@components.Badge("Inactive", "gray")
+									}
+								</td>
+								<td>{ components.FormatDate(u.CreatedAt) }</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+	</div>
+}
+
+templ manageUsersAction() {
+	<a class="btn btn-primary" href="/admin/users">Manage users</a>
+}

@@ -1,0 +1,262 @@
+package templates
+
+import "boilerplate/internal/components"
+
+templ View(d LandingData) {
+	@components.Base(d.Title, d.Theme, "landing-body", []string{"/static/css/landing.css"}, []string{"/static/js/motion.js"}, Page(d))
+}
+
+templ Page(d LandingData) {
+	<div class="grain" aria-hidden="true"></div>
+	<header class="nav">
+		<div class="container nav-inner">
+			<a class="brand" href="/">
+				@components.BrandMark(30)
+				<span class="brand-name">bara</span>
+			</a>
+			<nav class="nav-links" aria-label="Primary">
+				<a class="nav-link" href="#features">Features</a>
+				<a class="nav-link" href="#security">Security</a>
+			</nav>
+			<div class="nav-actions">
+				<button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Toggle color theme">
+					<span class="only-light">@components.Icon("moon", 18)</span>
+					<span class="only-dark">@components.Icon("sun", 18)</span>
+				</button>
+				if d.User != nil {
+					<a class="btn btn-secondary btn-sm" href="/dashboard">Dashboard</a>
+				} else {
+					<a class="nav-signin" href="/login">Sign in</a>
+					<a class="btn btn-primary btn-sm" href="/register">Get started</a>
+				}
+			</div>
+		</div>
+	</header>
+	<main>
+		@Hero(d)
+		@StackMarquee()
+		@Features()
+		@SecuritySection()
+		@CtaBand()
+	</main>
+	@Footer()
+}
+
+// Hero mixes a selection of motion effects: animated aurora mesh, film grain,
+// split-text reveal, cursor spotlight, floating shapes, magnetic button,
+// glassmorphism and 3D tilt on the visual card.
+templ Hero(d LandingData) {
+	<section class="hero" data-spotlight>
+		<div class="aurora" aria-hidden="true">
+			<span class="blob blob-a"></span>
+			<span class="blob blob-b"></span>
+			<span class="blob blob-c"></span>
+		</div>
+		<div class="hero-glow" aria-hidden="true"></div>
+		<span class="shape shape-sq" aria-hidden="true"></span>
+		<span class="shape shape-ring" aria-hidden="true"></span>
+		<span class="shape shape-dot" aria-hidden="true"></span>
+		<div class="container hero-grid">
+			<div class="hero-copy">
+				<h1 class="hero-title">
+					<span class="st-mask"><span class="st-word">Everything</span></span>
+					<span class="st-mask"><span class="st-word">after</span></span>
+					<span class="st-mask"><span class="st-word st-code">go mod init</span></span>
+					<span class="st-mask"><span class="st-word">is</span></span>
+					<span class="st-mask"><span class="st-word st-grad">already built.</span></span>
+				</h1>
+				<p class="hero-sub" data-reveal data-reveal-delay="3">
+					Bara wires auth, sessions, CSRF, CSP, GORM and templ views into a clean repo. Clone it, rename it, ship it.
+				</p>
+				<div class="hero-ctas" data-reveal data-reveal-delay="4">
+					<a class="btn btn-primary btn-lg" href="/register" data-magnetic>
+						Get started
+						@components.Icon("arrow-right", 18)
+					</a>
+					<a class="btn btn-secondary btn-lg" href="/login">Sign in</a>
+				</div>
+			</div>
+			<div class="hero-visual" data-reveal data-reveal-delay="2">
+				<div class="glass-card tilt-card" data-tilt>
+					<div class="glass-head">
+						<span class="glass-label">@components.Icon("terminal", 14) quickstart</span>
+					</div>
+					<pre class="code"><code>$ git clone https://github.com/you/bara
+$ cd bara &amp;&amp; go run ./cmd/web
+
+<span class="code-ok">✓</span> listening on http://localhost:8080
+<span class="code-ok">✓</span> database ready (sqlite)
+<span class="code-ok">✓</span> demo data seeded</code></pre>
+				</div>
+				<div class="glass-card glass-chip" data-tilt>
+					@components.Icon("shield-check", 18)
+					<span>CSP, CSRF and HttpOnly cookies by default</span>
+				</div>
+			</div>
+		</div>
+	</section>
+}
+
+templ StackMarquee() {
+	<section class="stack" aria-label="Technologies in the stack">
+		<div class="stack-track-wrap">
+			<div class="stack-track">
+				@stackItems()
+				@stackItems()
+			</div>
+		</div>
+	</section>
+}
+
+templ stackItems() {
+	<span class="stack-item" title="Go">@components.LogoGo(26)</span>
+	<span class="stack-item" title="GORM">@components.LogoGorm(26)</span>
+	<span class="stack-item" title="PostgreSQL">@components.LogoPostgres(26)</span>
+	<span class="stack-item" title="SQLite">@components.LogoSQLite(26)</span>
+	<span class="stack-item" title="Templ">@components.LogoTempl(26)</span>
+}
+
+templ Features() {
+	<section class="section" id="features">
+		<div class="container">
+			<div class="section-head" data-reveal>
+				<p class="eyebrow">What's inside</p>
+				<h2 class="section-title">Everything wired from day one</h2>
+				<p class="section-sub">The parts every Go app needs before it is allowed to ship, already in the box.</p>
+			</div>
+			<div class="bento">
+				<article class="card bento-card bento-auth" data-reveal data-tilt>
+					<span class="bento-icon">@components.Icon("key", 20)</span>
+					<h3 class="bento-title">Sign-in flows, already wired</h3>
+					<p class="bento-text">Server-side sessions, bcrypt hashing, role guards and the full forgot-password flow. Every route is readable in one screen.</p>
+					<ul class="route-list">
+						<li><span class="method method-get">GET</span> /login</li>
+						<li><span class="method method-post">POST</span> /login</li>
+						<li><span class="method method-get">GET</span> /register</li>
+						<li><span class="method method-post">POST</span> /logout</li>
+						<li><span class="method method-get">GET</span> /forgot-password</li>
+						<li><span class="method method-get">GET</span> /reset-password</li>
+					</ul>
+				</article>
+				<article class="card bento-card bento-db tinted" data-reveal data-reveal-delay="1" data-tilt>
+					<span class="bento-icon">@components.Icon("database", 20)</span>
+					<h3 class="bento-title">SQLite today, PostgreSQL tomorrow</h3>
+					<p class="bento-text">GORM sits behind one env var. Flip <code class="inline-code">BARA_DB_DRIVER</code> to postgres, point the DSN, migrate, done.</p>
+				</article>
+				<article class="card bento-card bento-templ" data-reveal data-tilt>
+					<span class="bento-icon">@components.Icon("code", 20)</span>
+					<h3 class="bento-title">Feature-based templ</h3>
+					<p class="bento-text">Views live beside their handlers, one folder per feature, all compiled before deploy.</p>
+				</article>
+				<article class="card bento-card bento-hardened" data-reveal data-reveal-delay="1" data-tilt>
+					<span class="bento-icon">@components.Icon("lock", 20)</span>
+					<h3 class="bento-title">Hardened by default</h3>
+					<p class="bento-text">The security checklist below is not an add-on. It ships in the first commit, configured and testable.</p>
+					<div class="bento-chips">
+						<span class="chip">CSP</span>
+						<span class="chip">CSRF</span>
+						<span class="chip">HttpOnly</span>
+						<span class="chip">SameSite</span>
+						<span class="chip">bcrypt</span>
+					</div>
+				</article>
+				<article class="card bento-card bento-theme tinted-dark" data-reveal data-reveal-delay="2" data-tilt>
+					<span class="bento-icon">@components.Icon("droplet", 20)</span>
+					<h3 class="bento-title">Light and dark, no flash</h3>
+					<p class="bento-text">The theme renders on the server from a cookie, so there is no wrong-theme flash on load.</p>
+				</article>
+				<article class="card bento-card bento-admin" data-reveal data-tilt>
+					<div class="bento-admin-copy">
+						<span class="bento-icon">@components.Icon("users", 20)</span>
+						<h3 class="bento-title">An admin console you didn't have to build</h3>
+						<p class="bento-text">User management with role and status controls, guarded server side on every request.</p>
+					</div>
+					<a class="btn btn-secondary" href="/login">Sign in to explore</a>
+				</article>
+			</div>
+		</div>
+	</section>
+}
+
+templ SecuritySection() {
+	<section class="section section-alt" id="security">
+		<div class="container security-grid">
+			<div class="security-copy" data-reveal>
+				<h2 class="section-title">Secure by default, verifiable in devtools</h2>
+				<p class="section-sub">The proofs live in your network panel, not in a brochure.</p>
+				<ul class="check-list">
+					<li>
+						@components.Icon("check", 18)
+						<span><strong>HttpOnly, SameSite session cookies.</strong> Page JavaScript can't touch the session ID.</span>
+					</li>
+					<li>
+						@components.Icon("check", 18)
+						<span><strong>CSRF tokens on every form,</strong> checked against the cookie and the Origin header.</span>
+					</li>
+					<li>
+						@components.Icon("check", 18)
+						<span><strong>Strict CSP.</strong> No inline scripts ship, so script-src stays 'self'.</span>
+					</li>
+					<li>
+						@components.Icon("check", 18)
+						<span><strong>bcrypt password hashing</strong> with server-side session storage.</span>
+					</li>
+					<li>
+						@components.Icon("check", 18)
+						<span><strong>Role guards on the server.</strong> Admin routes re-check the role on every request.</span>
+					</li>
+				</ul>
+			</div>
+			<div class="glass-card security-headers" data-reveal data-reveal-delay="1" data-tilt>
+				<div class="glass-head">
+					<span class="glass-label">@components.Icon("terminal", 14) response headers</span>
+				</div>
+				<pre class="code"><code><span class="code-key">content-security-policy:</span>
+    default-src 'self'; script-src 'self';
+    style-src 'self'; frame-ancestors 'none'
+<span class="code-key">x-frame-options:</span> DENY
+<span class="code-key">x-content-type-options:</span> nosniff
+<span class="code-key">referrer-policy:</span> strict-origin-when-cross-origin
+<span class="code-key">set-cookie:</span> bara_session=...;
+    HttpOnly; SameSite=Lax</code></pre>
+			</div>
+		</div>
+	</section>
+}
+
+templ CtaBand() {
+	<section class="section">
+		<div class="container">
+			<div class="cta-band" data-reveal>
+				<div class="cta-copy">
+					<h2 class="cta-title">Clone it tonight. Ship it this week.</h2>
+					<p class="cta-sub">One binary, one config file, zero required services. Delete what your product doesn't need.</p>
+				</div>
+				<div class="cta-action">
+					<a class="btn btn-inverse btn-lg" href="/register" data-magnetic>
+						Get started
+						@components.Icon("arrow-right", 18)
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+}
+
+templ Footer() {
+	<footer class="footer">
+		<div class="container footer-inner">
+			<a class="brand" href="/">
+				@components.BrandMark(26)
+				<span class="brand-name">bara</span>
+			</a>
+			<p class="footer-note">A production-ready Go boilerplate. MIT licensed, built with Go, templ and GORM.</p>
+			<nav class="footer-links" aria-label="Footer">
+				<a href="#features">Features</a>
+				<a href="#security">Security</a>
+				<a href="/login">Sign in</a>
+				<a href="/register">Get started</a>
+			</nav>
+		</div>
+	</footer>
+}

@@ -1,0 +1,164 @@
+package components
+
+// Base renders the document shell. theme is "light", "dark" or "" (follow the
+// system preference, resolved by CSS). All scripts and stylesheets are
+// external files so the strict CSP (script-src 'self') holds.
+templ Base(title, theme, bodyClass string, css []string, scripts []string, content templ.Component) {
+	<!DOCTYPE html>
+	<html lang="en" data-theme={ theme }>
+		<head>
+			<meta charset="utf-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1"/>
+			<meta name="color-scheme" content="light dark"/>
+			<title>{ title }</title>
+			<link rel="icon" type="image/svg+xml" href="/static/favicon.svg"/>
+			<link rel="stylesheet" href="/static/css/base.css"/>
+			for _, href := range css {
+				<link rel="stylesheet" href={ href }/>
+			}
+			<script src="/static/js/theme.js" defer></script>
+			for _, src := range scripts {
+				<script src={ src } defer></script>
+			}
+		</head>
+		<body class={ bodyClass }>
+			@content
+		</body>
+	</html>
+}
+
+templ AppLayout(d AppPageData) {
+	@Base(d.Title, d.Theme, "app-body", []string{"/static/css/app.css"}, []string{"/static/js/app.js"}, AppShell(d))
+}
+
+templ AppShell(d AppPageData) {
+	<div class="shell" id="shell">
+		<div class="scrim" data-sidebar-close aria-hidden="true"></div>
+		<aside class="sidebar" id="sidebar" aria-label="Sidebar">
+			<div class="sidebar-head">
+				<a class="brand" href="/">
+					@BrandMark(28)
+					<span class="brand-name">bara</span>
+				</a>
+				<button type="button" class="icon-btn sidebar-close" data-sidebar-close aria-label="Close menu">
+					@Icon("x", 18)
+				</button>
+			</div>
+			<nav class="sidebar-nav" aria-label="Main navigation">
+				<p class="nav-section">Menu</p>
+				for _, item := range NavItems(d.User.Role) {
+					<a href={ item.Href } class={ "nav-item", templ.KV("active", item.ID == d.Active) }>
+						<span class="nav-icon">@Icon(item.Icon, 18)</span>
+						<span class="nav-text">{ item.Label }</span>
+					</a>
+				}
+			</nav>
+			<div class="sidebar-foot">
+				<div class="dropdown-wrap" data-dropdown>
+					<button type="button" class="profile-btn" data-dropdown-toggle aria-haspopup="menu" aria-expanded="false">
+						<span class="avatar">{ d.User.Initials() }</span>
+						<span class="profile-meta">
+							<span class="profile-name">{ d.User.Name }</span>
+							<span class="profile-role">{ string(d.User.Role) }</span>
+						</span>
+						<span class="profile-chevron">@Icon("chevron-down", 14)</span>
+					</button>
+					<div class="dropdown dropdown-up" role="menu">
+						<a class="dropdown-item" role="menuitem" href="/settings">
+							@Icon("user", 16)
+							<span>Account information</span>
+						</a>
+						<form method="post" action="/logout">
+							@CSRFField(d.CSRF)
+							<button type="submit" class="dropdown-item" role="menuitem">
+								@Icon("logout", 16)
+								<span>Sign out</span>
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</aside>
+		<div class="main">
+			<header class="topbar">
+				<div class="topbar-left">
+					<button type="button" class="icon-btn topbar-menu" data-sidebar-open aria-label="Open menu">
+						@Icon("menu", 20)
+					</button>
+					<h1 class="topbar-title">{ d.Title }</h1>
+				</div>
+				<div class="topbar-actions">
+					<button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Toggle color theme">
+						<span class="only-light">@Icon("moon", 18)</span>
+						<span class="only-dark">@Icon("sun", 18)</span>
+					</button>
+				</div>
+			</header>
+			<main class="page">
+				@d.Content
+			</main>
+		</div>
+	</div>
+}
+
+templ AuthLayout(d AuthPageData) {
+	@Base(d.Title, d.Theme, "auth-body", []string{"/static/css/auth.css"}, nil, AuthShell(d))
+}
+
+templ AuthShell(d AuthPageData) {
+	<div class="auth">
+		<aside class="auth-panel">
+			<div class="aurora" aria-hidden="true">
+				<span class="blob blob-a"></span>
+				<span class="blob blob-b"></span>
+				<span class="blob blob-c"></span>
+			</div>
+			<span class="shape shape-sq" aria-hidden="true"></span>
+			<span class="shape shape-ring" aria-hidden="true"></span>
+			<span class="shape shape-dot" aria-hidden="true"></span>
+			<div class="auth-panel-inner">
+				<a class="brand brand-panel" href="/">
+					@BrandMark(30)
+					<span class="brand-name">bara</span>
+				</a>
+				<div class="auth-panel-mid">
+					<h2 class="auth-panel-title">{ d.PanelTitle }</h2>
+					<p class="auth-panel-text">{ d.PanelText }</p>
+					<ul class="auth-panel-list">
+						<li>
+							<span class="panel-list-icon">@Icon("shield-check", 16)</span>
+							<span>Server-side sessions with bcrypt hashing</span>
+						</li>
+						<li>
+							<span class="panel-list-icon">@Icon("lock", 16)</span>
+							<span>CSRF tokens and a strict CSP on every page</span>
+						</li>
+						<li>
+							<span class="panel-list-icon">@Icon("database", 16)</span>
+							<span>SQLite for dev, PostgreSQL for prod</span>
+						</li>
+					</ul>
+				</div>
+				<p class="auth-panel-foot">MIT licensed. Delete what your product doesn't need.</p>
+			</div>
+		</aside>
+		<main class="auth-main">
+			<div class="auth-top">
+				<a class="brand brand-sm" href="/">
+					@BrandMark(26)
+					<span class="brand-name">bara</span>
+				</a>
+				<div class="auth-top-actions">
+					<a class="link-muted" href="/">Back to home</a>
+					<button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Toggle color theme">
+						<span class="only-light">@Icon("moon", 18)</span>
+						<span class="only-dark">@Icon("sun", 18)</span>
+					</button>
+				</div>
+			</div>
+			<div class="auth-card-wrap">
+				@d.Content
+			</div>
+		</main>
+	</div>
+}

@@ -1,0 +1,43 @@
+package templates
+
+import "boilerplate/internal/components"
+
+templ Login(d LoginData) {
+	@components.AuthLayout(components.AuthPageData{
+		Title:      d.Title,
+		Theme:      d.Theme,
+		User:       nil,
+		CSRF:       d.CSRF,
+		PanelTitle: d.PanelTitle,
+		PanelText:  d.PanelText,
+		Content:    LoginCard(d),
+	})
+}
+
+templ LoginCard(d LoginData) {
+	<div class="auth-card" data-reveal>
+		<div class="auth-card-head">
+			<h1 class="auth-title">Welcome back</h1>
+			<p class="auth-sub">Sign in to your workspace.</p>
+		</div>
+		@components.FlashBanner(d.FlashType, d.FlashMsg)
+		<form class="form" method="post" action="/login" novalidate>
+			@components.CSRFField(d.CSRF)
+			@components.TextField("email", "Email", "email", "email", d.Email, "email", "you@company.com", d.Errors["email"])
+			@components.PasswordField("password", "Password", "password", "current-password", d.Errors["password"])
+			@components.FormError(d.Errors["form"])
+			<button type="submit" class="btn btn-primary btn-block">Sign in</button>
+		</form>
+		<div class="auth-between">
+			<a class="link-muted" href="/forgot-password">Forgot password?</a>
+		</div>
+		<p class="auth-switch">New to Bara? <a href="/register">Create an account</a></p>
+		if d.DemoHint {
+			<div class="demo-hint">
+				<p class="demo-hint-title">Seeded for local development</p>
+				<code>{ d.DemoAdmin }</code>
+				<code>{ d.DemoUser }</code>
+			</div>
+		}
+	</div>
+}

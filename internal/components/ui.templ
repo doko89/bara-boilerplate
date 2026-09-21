@@ -1,0 +1,129 @@
+package components
+
+import "boilerplate/internal/domain"
+
+templ CSRFField(token string) {
+	<input type="hidden" name="_csrf" value={ token }/>
+}
+
+templ FlashBanner(flashType, message string) {
+	if message != "" {
+		<div class={ "flash", templ.KV("flash-success", flashType == "success"), templ.KV("flash-info", flashType == "info"), templ.KV("flash-error", flashType != "success" && flashType != "info") } role="status">
+			if flashType == "success" {
+				@Icon("check", 16)
+			} else {
+				@Icon("alert", 16)
+			}
+			<span>{ message }</span>
+		</div>
+	}
+}
+
+templ FormError(msg string) {
+	if msg != "" {
+		<div class="flash flash-error" role="alert">
+			@Icon("alert", 16)
+			<span>{ msg }</span>
+		</div>
+	}
+}
+
+templ TextField(id, label, name, inputType, value, autocomplete, placeholder, errMsg string) {
+	<div class="field">
+		<label class="field-label" for={ id }>{ label }</label>
+		<input class={ "input", templ.KV("input-invalid", errMsg != "") } id={ id } name={ name } type={ inputType } value={ value } autocomplete={ autocomplete } placeholder={ placeholder }/>
+		if errMsg != "" {
+			<p class="field-error">{ errMsg }</p>
+		}
+	</div>
+}
+
+templ PasswordField(id, label, name, autocomplete, errMsg string) {
+	<div class="field">
+		<label class="field-label" for={ id }>{ label }</label>
+		<div class="input-wrap">
+			<input class={ "input", templ.KV("input-invalid", errMsg != "") } id={ id } name={ name } type="password" autocomplete={ autocomplete } placeholder="At least 8 characters" data-password-input/>
+			<button type="button" class="input-trailing" data-password-toggle aria-label="Show password">
+				<span class="pw-show">@Icon("eye", 16)</span>
+				<span class="pw-hide">@Icon("eye-off", 16)</span>
+			</button>
+		</div>
+		if errMsg != "" {
+			<p class="field-error">{ errMsg }</p>
+		}
+	</div>
+}
+
+templ StatCard(icon, label, value, sub, countTo string, delay int) {
+	<div class="card stat-card" data-reveal data-reveal-delay={ delay }>
+		<div class="stat-top">
+			<p class="stat-label">{ label }</p>
+			<span class="stat-icon">@Icon(icon, 18)</span>
+		</div>
+		if countTo != "" {
+			<p class="stat-value" data-count-to={ countTo }>0</p>
+		} else {
+			<p class="stat-value">{ value }</p>
+		}
+		if sub != "" {
+			<p class="stat-sub">{ sub }</p>
+		}
+	</div>
+}
+
+templ Badge(text, variant string) {
+	<span class={ "badge", "badge-" + variant }>{ text }</span>
+}
+
+templ Avatar(initials string) {
+	<span class="avatar">{ initials }</span>
+}
+
+templ EmptyState(icon, title, text string) {
+	<div class="empty">
+		<span class="empty-icon">@Icon(icon, 22)</span>
+		<p class="empty-title">{ title }</p>
+		<p class="empty-text">{ text }</p>
+	</div>
+}
+
+templ PageHeader(title, sub string, action templ.Component) {
+	<div class="page-header" data-reveal>
+		<div class="page-header-copy">
+			<h2 class="page-title">{ title }</h2>
+			if sub != "" {
+				<p class="page-sub">{ sub }</p>
+			}
+		</div>
+		if action != nil {
+			@action
+		}
+	</div>
+}
+
+templ ErrorPage(code int, title, detail, theme string, user *domain.User) {
+	@Base(ErrorPageTitle(code), theme, "error-body", nil, nil, errorContent(code, title, detail, user))
+}
+
+templ errorContent(code int, title, detail string, user *domain.User) {
+	<main class="error-wrap">
+		<a class="brand" href="/">
+			@BrandMark(30)
+			<span class="brand-name">bara</span>
+		</a>
+		<p class="error-code">{ code }</p>
+		<h1 class="error-title">{ title }</h1>
+		<p class="error-detail">{ detail }</p>
+		<div class="error-actions">
+			if user != nil {
+				if user.IsAdmin() {
+					<a class="btn btn-primary" href="/admin">Back to dashboard</a>
+				} else {
+					<a class="btn btn-primary" href="/dashboard">Back to dashboard</a>
+				}
+			} else {
+				<a class="btn btn-primary" href="/">Back to home</a>
+			}
+		</div>
+	</main>
+}
