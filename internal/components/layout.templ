@@ -28,7 +28,7 @@ templ Base(title, theme, bodyClass string, css []string, scripts []string, conte
 }
 
 templ AppLayout(d AppPageData) {
-	@Base(d.Title, d.Theme, "app-body", []string{"/static/css/app.css"}, []string{"/static/js/app.js"}, AppShell(d))
+	@Base(d.Title, d.Theme, "app-body", []string{"/static/css/app.css"}, append([]string{"/static/js/app.js"}, d.Scripts...), AppShell(d))
 }
 
 templ AppShell(d AppPageData) {
@@ -56,7 +56,7 @@ templ AppShell(d AppPageData) {
 			<div class="sidebar-foot">
 				<div class="dropdown-wrap" data-dropdown>
 					<button type="button" class="profile-btn" data-dropdown-toggle aria-haspopup="menu" aria-expanded="false">
-						<span class="avatar">{ d.User.Initials() }</span>
+						@Avatar(d.User.AvatarURL, d.User.Initials())
 						<span class="profile-meta">
 							<span class="profile-name">{ d.User.Name }</span>
 							<span class="profile-role">{ string(d.User.Role) }</span>

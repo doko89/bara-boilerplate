@@ -75,8 +75,17 @@ templ Badge(text, variant string) {
 	<span class={ "badge", "badge-" + variant }>{ text }</span>
 }
 
-templ Avatar(initials string) {
-	<span class="avatar">{ initials }</span>
+// Avatar renders the user's photo when one was uploaded, otherwise the
+// initials fallback. data-avatar-slot lets avatar.js swap every visible
+// avatar in place right after an upload.
+templ Avatar(url, initials string) {
+	<span class="avatar" data-avatar-slot>
+		if url != "" {
+			<img class="avatar-img" src={ url } alt="" data-avatar-img/>
+		} else {
+			{ initials }
+		}
+	</span>
 }
 
 templ EmptyState(icon, title, text string) {

@@ -68,7 +68,7 @@ func RegisterCard(d RegisterData) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"auth-card\" data-reveal><div class=\"auth-card-head\"><h1 class=\"auth-title\">Create your account</h1><p class=\"auth-sub\">A couple of fields and you're in.</p></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"auth-card\"><div class=\"auth-card-head\"><h1 class=\"auth-title\">Create your account</h1><p class=\"auth-sub\">A couple of fields and you're in.</p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

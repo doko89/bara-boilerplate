@@ -69,7 +69,7 @@ func ResetCard(d ResetData) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if d.Valid {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"auth-card\" data-reveal><div class=\"auth-card-head\"><span class=\"auth-state-icon\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"auth-card\"><div class=\"auth-card-head\"><span class=\"auth-state-icon\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -119,7 +119,7 @@ func ResetCard(d ResetData) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"auth-card auth-state\" data-reveal><span class=\"auth-state-icon\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"auth-card auth-state\"><span class=\"auth-state-icon\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

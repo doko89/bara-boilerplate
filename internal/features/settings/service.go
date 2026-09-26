@@ -16,6 +16,7 @@ var ErrWrongPassword = errors.New("current password is incorrect")
 type SettingsRepository interface {
 	EmailTakenBy(email string, exceptUserID uint) (bool, error)
 	UpdateProfile(userID uint, name, email string) error
+	UpdateAvatarURL(userID uint, avatarURL string) error
 	UpdatePassword(userID uint, hash string) error
 }
 
@@ -58,6 +59,10 @@ func (s *Service) ChangePassword(u *domain.User, currentSessionID, current, newP
 	}
 	s.sessions.DestroyForUser(u.ID, currentSessionID)
 	return nil
+}
+
+func (s *Service) UpdateAvatarURL(userID uint, avatarURL string) error {
+	return s.repo.UpdateAvatarURL(userID, avatarURL)
 }
 
 func (s *Service) RevokeOtherSessions(userID uint, currentSessionID string) {

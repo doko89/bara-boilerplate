@@ -1,6 +1,7 @@
 package templates
 
 import "boilerplate/internal/components"
+import "strconv"
 
 templ SettingsContent(d SettingsData) {
 	@components.PageHeader("Settings", "Manage your account, security and active sessions.", nil)
@@ -8,6 +9,38 @@ templ SettingsContent(d SettingsData) {
 		@components.FlashBanner(d.FlashType, d.FlashMsg)
 	}
 	<div class="settings-grid">
+		<section class="card" data-reveal aria-labelledby="avatar-title">
+			<div class="card-head">
+				<div>
+					<h3 class="card-title" id="avatar-title">Profile photo</h3>
+					<p class="card-sub">Drag and drop an image, or click to choose one.</p>
+				</div>
+			</div>
+			<div class="card-pad avatar-grid">
+				<span class="avatar avatar-xl" data-avatar-slot>
+					if d.AvatarURL != "" {
+						<img class="avatar-img" src={ d.AvatarURL } alt=""/>
+					} else {
+						{ d.Initials }
+					}
+				</span>
+				<div
+					class="dropzone"
+					data-avatar-dropzone
+					data-max-bytes={ strconv.FormatInt(d.MaxUploadBytes, 10) }
+					role="button"
+					tabindex="0"
+					aria-label="Upload a profile photo"
+				>
+					<input type="hidden" name="_csrf" value={ d.CSRF } data-avatar-csrf/>
+					<input class="sr-only" type="file" accept="image/*" tabindex="-1" data-avatar-input/>
+					<p class="dropzone-title">Drop an image here or <span class="dropzone-link">browse files</span></p>
+					<p class="dropzone-sub">Cropped square, resized to 512px and converted to WebP at 80% quality in your browser.</p>
+					<p class="avatar-status" role="status" data-avatar-status></p>
+				</div>
+			</div>
+		</section>
+
 		<section class="card" data-reveal aria-labelledby="profile-title">
 			<div class="card-head">
 				<div>

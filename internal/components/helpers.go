@@ -17,6 +17,7 @@ type AppPageData struct {
 	Theme   string // "light", "dark" or "" (follow system)
 	User    *domain.User
 	CSRF    string
+	Scripts []string // extra page scripts besides app.js, e.g. avatar.js
 	Content templ.Component
 }
 

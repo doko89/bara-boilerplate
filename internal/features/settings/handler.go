@@ -1,13 +1,16 @@
 package settings
 
 import (
+	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"strings"
 
 	"boilerplate/internal/components"
 	"boilerplate/internal/features/auth"
 	"boilerplate/internal/features/settings/templates"
+	"boilerplate/internal/features/uploads"
 	"boilerplate/internal/middleware"
 	"boilerplate/internal/session"
 	"boilerplate/internal/webctx"
@@ -16,12 +19,14 @@ import (
 type Handler struct {
 	svc      *Service
 	sessions *session.Manager
+	avatars  *uploads.Store
 }
 
-func RegisterRoutes(mux *http.ServeMux, svc *Service) {
-	h := &Handler{svc: svc}
+func RegisterRoutes(mux *http.ServeMux, svc *Service, avatars *uploads.Store) {
+	h := &Handler{svc: svc, avatars: avatars}
 	mux.HandleFunc("GET /settings", h.page)
 	mux.HandleFunc("POST /settings/profile", h.saveProfile)
+	mux.HandleFunc("POST /settings/avatar", h.uploadAvatar)
 	mux.HandleFunc("POST /settings/password", h.changePassword)
 	mux.HandleFunc("POST /settings/sessions/revoke-others", h.revokeOthers)
 }
@@ -45,6 +50,9 @@ func (h *Handler) render(w http.ResponseWriter, r *http.Request, d templates.Set
 	d.FlashMsg = flashMsg
 	d.Name = user.Name
 	d.Email = user.Email
+	d.AvatarURL = user.AvatarURL
+	d.Initials = user.Initials()
+	d.MaxUploadBytes = h.avatars.MaxBytes()
 	d.Sessions = h.svc.Sessions(user.ID, 8)
 	if current != nil {
 		d.CurrentSessionID = current.ID
@@ -62,6 +70,7 @@ func (h *Handler) render(w http.ResponseWriter, r *http.Request, d templates.Set
 		Theme:   d.Theme,
 		User:    user,
 		CSRF:    d.CSRF,
+		Scripts: []string{"/static/js/avatar.js"},
 		Content: templates.SettingsContent(d),
 	}
 	components.AppLayout(app).Render(r.Context(), w)
@@ -107,6 +116,72 @@ func (h *Handler) saveProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	webctx.SetFlash(w, "success", "Profile updated.")
+	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+}
+
+// uploadAvatar accepts a client-converted WebP avatar (canvas.toBlob,
+// quality 0.8), stores it as /uploads/avatar/<uuid>.webp and points the
+// user record at it. The previous avatar file is removed best-effort.
+func (h *Handler) uploadAvatar(w http.ResponseWriter, r *http.Request) {
+	if !middleware.RequireAuth(w, r) {
+		return
+	}
+	user := webctx.User(r.Context())
+	// Bound the body: file limit plus headroom for multipart framing.
+	r.Body = http.MaxBytesReader(w, r.Body, h.avatars.MaxBytes()+(1<<20))
+	f, _, err := r.FormFile("avatar")
+	if err != nil {
+		h.avatarError(w, r, http.StatusBadRequest, "Choose an image file first.")
+		return
+	}
+	defer f.Close()
+	data, err := io.ReadAll(f)
+	if err != nil {
+		h.avatarError(w, r, http.StatusRequestEntityTooLarge, "That image is too large.")
+		return
+	}
+	url, err := h.avatars.Save("avatar", data)
+	if err != nil {
+		switch {
+		case errors.Is(err, uploads.ErrTooLarge):
+			h.avatarError(w, r, http.StatusRequestEntityTooLarge, "That image is too large.")
+		case errors.Is(err, uploads.ErrNotWebP):
+			h.avatarError(w, r, http.StatusUnprocessableEntity, "Upload a WebP image converted by the form.")
+		default:
+			h.avatarError(w, r, http.StatusInternalServerError, "Could not save the image. Try again.")
+		}
+		return
+	}
+	if err := h.svc.UpdateAvatarURL(user.ID, url); err != nil {
+		// Roll back the orphaned file; the user-visible error is the DB one.
+		_ = h.avatars.Delete("avatar", strings.TrimPrefix(url, uploads.RoutePrefix+"avatar/"))
+		h.avatarError(w, r, http.StatusInternalServerError, "Could not save the image. Try again.")
+		return
+	}
+	if strings.HasPrefix(user.AvatarURL, uploads.RoutePrefix+"avatar/") {
+		// Best-effort cleanup of the replaced file; a leftover is harmless
+		// because its URL is no longer referenced anywhere.
+		_ = h.avatars.Delete("avatar", strings.TrimPrefix(user.AvatarURL, uploads.RoutePrefix+"avatar/"))
+	}
+	if strings.Contains(r.Header.Get("Accept"), "application/json") {
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]string{"avatar_url": url})
+		return
+	}
+	webctx.SetFlash(w, "success", "Profile photo updated.")
+	http.Redirect(w, r, "/settings", http.StatusSeeOther)
+}
+
+// avatarError answers JSON for the drag-and-drop fetch flow and falls back
+// to a flash + redirect for plain form posts.
+func (h *Handler) avatarError(w http.ResponseWriter, r *http.Request, code int, msg string) {
+	if strings.Contains(r.Header.Get("Accept"), "application/json") {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(code)
+		_ = json.NewEncoder(w).Encode(map[string]string{"error": msg})
+		return
+	}
+	webctx.SetFlash(w, "error", msg)
 	http.Redirect(w, r, "/settings", http.StatusSeeOther)
 }
 

@@ -19,6 +19,9 @@ type Config struct {
 	SessionTTL    time.Duration
 	SecureCookies bool
 
+	UploadDir      string // local directory for user uploads, served at /uploads
+	UploadMaxBytes int64  // max accepted avatar file size in bytes
+
 	SeedAdminEmail    string
 	SeedAdminPassword string
 }
@@ -36,6 +39,9 @@ func Load() Config {
 
 		SessionTTL:    time.Duration(envInt("BARA_SESSION_TTL_HOURS", 24*7)) * time.Hour,
 		SecureCookies: env("BARA_COOKIE_SECURE", "false") == "true",
+
+		UploadDir:      env("BARA_UPLOAD_DIR", "data/uploads"),
+		UploadMaxBytes: int64(envInt("BARA_UPLOAD_MAX_MB", 2)) << 20,
 
 		SeedAdminEmail:    env("BARA_SEED_ADMIN_EMAIL", "admin@bara.dev"),
 		SeedAdminPassword: env("BARA_SEED_ADMIN_PASSWORD", "Admin1234"),

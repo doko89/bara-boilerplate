@@ -30,6 +30,12 @@ func (r *Repository) UpdateProfile(userID uint, name, email string) error {
 		Updates(map[string]any{"name": name, "email": email, "updated_at": time.Now()}).Error
 }
 
+func (r *Repository) UpdateAvatarURL(userID uint, avatarURL string) error {
+	return r.db.Model(&domain.User{}).
+		Where("id = ?", userID).
+		Updates(map[string]any{"avatar_url": avatarURL, "updated_at": time.Now()}).Error
+}
+
 func (r *Repository) UpdatePassword(userID uint, hash string) error {
 	return r.db.Model(&domain.User{}).
 		Where("id = ?", userID).

@@ -13,6 +13,7 @@ import (
 	"boilerplate/internal/features/dashboard"
 	"boilerplate/internal/features/landing"
 	"boilerplate/internal/features/settings"
+	"boilerplate/internal/features/uploads"
 	"boilerplate/internal/middleware"
 	"boilerplate/internal/session"
 	"boilerplate/internal/webctx"
@@ -28,6 +29,9 @@ func New(cfg config.Config, db *gorm.DB, log *slog.Logger) http.Handler {
 
 	landing.RegisterRoutes(mux)
 
+	avatarStore := uploads.NewStore(cfg.UploadDir, cfg.UploadMaxBytes)
+	uploads.RegisterRoutes(mux, avatarStore)
+
 	authRepo := auth.NewRepository(db)
 	authSvc := auth.NewService(authRepo, manager, log)
 	auth.RegisterRoutes(mux, authSvc, manager, cfg, log)
@@ -37,7 +41,7 @@ func New(cfg config.Config, db *gorm.DB, log *slog.Logger) http.Handler {
 
 	settingsRepo := settings.NewRepository(db)
 	settingsSvc := settings.NewService(settingsRepo, manager)
-	settings.RegisterRoutes(mux, settingsSvc)
+	settings.RegisterRoutes(mux, settingsSvc, avatarStore)
 
 	adminRepo := admin.NewRepository(db)
 	adminSvc := admin.NewService(adminRepo, manager)
@@ -55,9 +59,11 @@ func New(cfg config.Config, db *gorm.DB, log *slog.Logger) http.Handler {
 }
 
 // withNotFound renders the styled 404 page whenever no route matches.
+// Matched requests go back through mux.ServeHTTP (instead of the handler
+// returned by mux.Handler) so ServeMux wildcard path values stay populated.
 func withNotFound(mux *http.ServeMux) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		h, pattern := mux.Handler(r)
+		_, pattern := mux.Handler(r)
 		if pattern == "" {
 			w.WriteHeader(http.StatusNotFound)
 			components.ErrorPage(
@@ -69,7 +75,7 @@ func withNotFound(mux *http.ServeMux) http.Handler {
 			).Render(r.Context(), w)
 			return
 		}
-		h.ServeHTTP(w, r)
+		mux.ServeHTTP(w, r)
 	})
 }
 

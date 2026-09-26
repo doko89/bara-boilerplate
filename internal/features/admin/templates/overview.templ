@@ -43,7 +43,7 @@ templ OverviewContent(d OverviewData) {
 							<tr>
 								<td>
 									<div class="cell-user">
-										@components.Avatar(u.Initials())
+										@components.Avatar(u.AvatarURL, u.Initials())
 										<div class="cell-user-meta">
 											<span class="cell-user-name">{ u.Name }</span>
 											<span class="cell-user-email">{ u.Email }</span>

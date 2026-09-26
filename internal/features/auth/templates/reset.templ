@@ -16,7 +16,7 @@ templ Reset(d ResetData) {
 
 templ ResetCard(d ResetData) {
 	if d.Valid {
-		<div class="auth-card" data-reveal>
+		<div class="auth-card">
 			<div class="auth-card-head">
 				<span class="auth-state-icon">@components.Icon("key", 20)</span>
 				<h1 class="auth-title">Set a new password</h1>
@@ -33,7 +33,7 @@ templ ResetCard(d ResetData) {
 			<p class="auth-switch">Remembered it after all? <a href="/login">Sign in</a></p>
 		</div>
 	} else {
-		<div class="auth-card auth-state" data-reveal>
+		<div class="auth-card auth-state">
 			<span class="auth-state-icon">@components.Icon("alert", 20)</span>
 			<h1 class="auth-title">This link has expired</h1>
 			<p class="auth-sub">Reset links are single-use and valid for one hour. Request a fresh one and try again.</p>
