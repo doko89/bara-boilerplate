@@ -85,7 +85,12 @@ templ AppShell(d AppPageData) {
 					<button type="button" class="icon-btn topbar-menu" data-sidebar-open aria-label="Open menu">
 						@Icon("menu", 20)
 					</button>
-					<h1 class="topbar-title">{ d.Title }</h1>
+					if len(d.Crumbs) > 0 {
+						<h1 class="sr-only">{ d.Title }</h1>
+						@Breadcrumb(d.Crumbs)
+					} else {
+						<h1 class="topbar-title">{ d.Title }</h1>
+					}
 				</div>
 				<div class="topbar-actions">
 					<button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Toggle color theme">

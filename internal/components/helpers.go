@@ -13,12 +13,13 @@ import (
 // StaticVersion is appended to every local CSS/JS URL as ?v=. Static files
 // are served with a long Cache-Control, so bump this whenever anything under
 // web/static changes — otherwise browsers keep rendering the cached bytes.
-const StaticVersion = "5"
+const StaticVersion = "9"
 
 // AppPageData wires everything the authenticated app shell needs.
 type AppPageData struct {
 	Title   string
 	Active  string // id of the active sidebar item
+	Crumbs  []Crumb
 	Theme   string // "light", "dark" or "" (follow system)
 	User    *domain.User
 	CSRF    string
@@ -44,6 +45,15 @@ type NavItem struct {
 	Icon  string
 }
 
+// Crumb is one breadcrumb item. The last crumb is rendered as the current
+// page; Href on it is ignored. When Icon is set the label is visually
+// replaced by the icon (kept for screen readers).
+type Crumb struct {
+	Label string
+	Href  string
+	Icon  string
+}
+
 func NavItems(role domain.Role) []NavItem {
 	overview := NavItem{ID: "overview", Label: "Overview", Href: "/dashboard", Icon: "home"}
 	if role == domain.RoleAdmin {
@@ -55,6 +65,15 @@ func NavItems(role domain.Role) []NavItem {
 	}
 	// Profile lives only in the account dropdown (sidebar footer), not here.
 	return items
+}
+
+// HomeHref returns the landing page for a role: the admin overview for
+// admins, the user dashboard otherwise. Breadcrumb trails root here.
+func HomeHref(role domain.Role) string {
+	if role == domain.RoleAdmin {
+		return "/admin"
+	}
+	return "/dashboard"
 }
 
 // AuthPanelCopy returns the marketing copy shown on the brand panel of each

@@ -110,6 +110,31 @@ templ PageHeader(title, sub string, action templ.Component) {
 	</div>
 }
 
+// Breadcrumb renders an ARIA breadcrumb trail above the page header. The last
+// item is always the current page; earlier items render as links.
+templ Breadcrumb(items []Crumb) {
+	<nav class="breadcrumb" aria-label="Breadcrumb">
+		<ol>
+			for i, c := range items {
+				<li>
+					if i < len(items)-1 {
+						<a href={ c.Href }>
+							if c.Icon != "" {
+								@Icon(c.Icon, 14)
+								<span class="sr-only">{ c.Label }</span>
+							} else {
+								{ c.Label }
+							}
+						</a>
+					} else {
+						<span aria-current="page">{ c.Label }</span>
+					}
+				</li>
+			}
+		</ol>
+	</nav>
+}
+
 templ ErrorPage(code int, title, detail, theme string, user *domain.User) {
 	@Base(ErrorPageTitle(code), theme, "error-body", nil, nil, errorContent(code, title, detail, user))
 }

@@ -274,6 +274,51 @@
 	color: var(--text-muted);
 }
 
+.breadcrumb ol {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 8px;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	font-size: 13.5px;
+}
+
+.breadcrumb li {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	color: var(--text-muted);
+}
+
+.breadcrumb li + li::before {
+	content: "/";
+	color: var(--border-strong);
+}
+
+.breadcrumb a {
+	display: inline-flex;
+	align-items: center;
+}
+
+.breadcrumb a:hover {
+	color: var(--primary);
+}
+
+.breadcrumb [aria-current="page"] {
+	color: var(--text);
+	font-weight: 600;
+}
+
+.topbar .breadcrumb ol {
+	font-size: 14.5px;
+}
+
+.topbar .breadcrumb [aria-current="page"] {
+	font-size: 17px;
+}
+
 /* ---------- Cards & stats ---------- */
 
 .card {
@@ -517,6 +562,10 @@
 .profile-grid > .card {
 	display: flex;
 	flex-direction: column;
+}
+
+.profile-grid > .card-span {
+	grid-column: 1 / -1;
 }
 
 /* ---------- Avatar photo upload ---------- */

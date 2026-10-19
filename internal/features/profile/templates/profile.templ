@@ -9,41 +9,7 @@ templ ProfileContent(d ProfileData) {
 		@components.FlashBanner(d.FlashType, d.FlashMsg)
 	}
 	<div class="profile-grid">
-		<section class="card" data-reveal aria-labelledby="avatar-title">
-			<div class="card-head">
-				<div>
-					<h3 class="card-title" id="avatar-title">Profile photo</h3>
-					<p class="card-sub">Drop an image on your photo, or click it to choose one.</p>
-				</div>
-			</div>
-			<div class="card-pad avatar-center">
-				<span
-					class="avatar avatar-xl avatar-upload"
-					data-avatar-dropzone
-					data-max-bytes={ strconv.FormatInt(d.MaxUploadBytes, 10) }
-					role="button"
-					tabindex="0"
-					aria-label="Upload a profile photo"
-				>
-					<span class="avatar-visual" data-avatar-slot>
-						if d.AvatarURL != "" {
-							<img class="avatar-img" src={ d.AvatarURL } alt=""/>
-						} else {
-							{ d.Initials }
-						}
-					</span>
-					<span class="avatar-overlay" aria-hidden="true">
-						@components.Icon("camera", 20)
-						<span>Change</span>
-					</span>
-					<input type="hidden" name="_csrf" value={ d.CSRF } data-avatar-csrf/>
-					<input class="sr-only" id="avatar-input" name="avatar" type="file" accept="image/*" tabindex="-1" aria-hidden="true" data-avatar-input/>
-				</span>
-				<p class="avatar-status" role="status" data-avatar-status></p>
-			</div>
-		</section>
-
-		<section class="card" id="password" data-reveal data-reveal-delay="1" aria-labelledby="password-title">
+		<section class="card" id="password" data-reveal aria-labelledby="password-title">
 			<div class="card-head">
 				<div>
 					<h3 class="card-title" id="password-title">Password</h3>
@@ -62,7 +28,7 @@ templ ProfileContent(d ProfileData) {
 			</form>
 		</section>
 
-		<section class="card" data-reveal data-reveal-delay="2" aria-labelledby="profile-title">
+		<section class="card" data-reveal data-reveal-delay="1" aria-labelledby="profile-title">
 			<div class="card-head">
 				<div>
 					<h3 class="card-title" id="profile-title">Account information</h3>
@@ -71,6 +37,31 @@ templ ProfileContent(d ProfileData) {
 			</div>
 			<form class="form card-pad" method="post" action="/profile" novalidate>
 				@components.CSRFField(d.CSRF)
+				<div class="avatar-center">
+					<span
+						class="avatar avatar-xl avatar-upload"
+						data-avatar-dropzone
+						data-max-bytes={ strconv.FormatInt(d.MaxUploadBytes, 10) }
+						role="button"
+						tabindex="0"
+						aria-label="Upload a profile photo"
+					>
+						<span class="avatar-visual" data-avatar-slot>
+							if d.AvatarURL != "" {
+								<img class="avatar-img" src={ d.AvatarURL } alt=""/>
+							} else {
+								{ d.Initials }
+							}
+						</span>
+						<span class="avatar-overlay" aria-hidden="true">
+							@components.Icon("camera", 20)
+							<span>Change</span>
+						</span>
+						<input type="hidden" name="_csrf" value={ d.CSRF } data-avatar-csrf/>
+						<input class="sr-only" id="avatar-input" name="avatar" type="file" accept="image/*" tabindex="-1" aria-hidden="true" data-avatar-input/>
+					</span>
+					<p class="avatar-status" role="status" data-avatar-status></p>
+				</div>
 				@components.TextField("name", "Full name", "name", "text", d.Name, "name", "", d.Errors["name"])
 				@components.TextField("email", "Email", "email", "email", d.Email, "email", "", d.Errors["email"])
 				@components.FormError(d.Errors["profile_form"])
@@ -80,7 +71,7 @@ templ ProfileContent(d ProfileData) {
 			</form>
 		</section>
 
-		<section class="card" data-reveal data-reveal-delay="3" aria-labelledby="sessions-title">
+		<section class="card card-span" data-reveal data-reveal-delay="2" aria-labelledby="sessions-title">
 			<div class="card-head">
 				<div>
 					<h3 class="card-title" id="sessions-title">Active sessions</h3>

@@ -51,8 +51,12 @@ func (h *Handler) overview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app := components.AppPageData{
-		Title:   "Admin overview",
-		Active:  "overview",
+		Title:  "Admin overview",
+		Active: "overview",
+		Crumbs: []components.Crumb{
+			{Label: "Home", Href: components.HomeHref(user.Role), Icon: "home"},
+			{Label: "Admin overview"},
+		},
 		Theme:   d.Theme,
 		User:    user,
 		CSRF:    d.CSRF,
@@ -82,8 +86,12 @@ func (h *Handler) users(w http.ResponseWriter, r *http.Request) {
 	}
 
 	app := components.AppPageData{
-		Title:   "Users",
-		Active:  "users",
+		Title:  "Users",
+		Active: "users",
+		Crumbs: []components.Crumb{
+			{Label: "Home", Href: components.HomeHref(user.Role), Icon: "home"},
+			{Label: "Users"},
+		},
 		Theme:   d.Theme,
 		User:    user,
 		CSRF:    d.CSRF,
