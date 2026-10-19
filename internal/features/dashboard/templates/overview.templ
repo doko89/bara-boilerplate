@@ -24,7 +24,7 @@ templ OverviewContent(d OverviewData) {
 					<h3 class="card-title">Recent sign-ins</h3>
 					<p class="card-sub">The latest sessions created on this account.</p>
 				</div>
-				<a class="btn btn-secondary btn-sm" href="/settings">Manage sessions</a>
+				<a class="btn btn-secondary btn-sm" href="/profile">Manage sessions</a>
 			</div>
 			if len(d.Recent) == 0 {
 				@components.EmptyState("activity", "No sign-ins yet", "Sign-in activity will show up here after you log in from a device.")
@@ -64,12 +64,12 @@ templ OverviewContent(d OverviewData) {
 				</div>
 			</div>
 			<nav class="quick-list" aria-label="Quick actions">
-				<a href="/settings">
+				<a href="/profile">
 					<span class="quick-icon">@components.Icon("user", 16)</span>
 					<span>Edit account information</span>
 					@components.Icon("arrow-right", 15)
 				</a>
-				<a href="/settings#password">
+				<a href="/profile#password">
 					<span class="quick-icon">@components.Icon("key", 16)</span>
 					<span>Change password</span>
 					@components.Icon("arrow-right", 15)

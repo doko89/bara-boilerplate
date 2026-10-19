@@ -1,6 +1,7 @@
-// avatar.js — settings page: drag-and-drop avatar upload. The chosen image
+// avatar.js — profile page: the profile photo itself is the drag-and-drop
+// avatar upload target. The chosen image
 // is cropped square, resized to 512px and converted to WebP at 80% quality
-// with the Canvas API, then posted to /settings/avatar. Only runs when a
+// with the Canvas API, then posted to /profile/avatar. Only runs when a
 // [data-avatar-dropzone] is on the page.
 (function () {
 	var MAX_SIDE = 512;
@@ -10,10 +11,11 @@
 	if (!zone) return;
 
 	var input = zone.querySelector('[data-avatar-input]');
-	var status = zone.querySelector('[data-avatar-status]');
+	var status = document.querySelector('[data-avatar-status]');
 	var csrfInput = zone.querySelector('[data-avatar-csrf]');
 	var maxBytes = parseInt(zone.getAttribute('data-max-bytes') || '0', 10);
 	var busy = false;
+	var previewUrl = null;
 
 	function say(msg, isError) {
 		if (!status) return;
@@ -74,7 +76,7 @@
 	function upload(blob) {
 		var form = new FormData();
 		form.append('avatar', blob, 'avatar.webp');
-		return fetch('/settings/avatar', {
+		return fetch('/profile/avatar', {
 			method: 'POST',
 			headers: {
 				'Accept': 'application/json',
@@ -85,6 +87,8 @@
 			return res.json().then(function (body) {
 				if (!res.ok) throw new Error((body && body.error) || 'Upload failed.');
 				return body.avatar_url;
+			}, function () {
+				throw new Error('Upload failed.');
 			});
 		});
 	}
@@ -96,21 +100,29 @@
 			return;
 		}
 		busy = true;
+		zone.setAttribute('aria-busy', 'true');
 		say('Converting…');
 		convert(file).then(function (blob) {
 			if (maxBytes > 0 && blob.size > maxBytes) {
 				throw new Error('That image is too large even after compression.');
 			}
-			setSlots(URL.createObjectURL(blob));
+			if (previewUrl) URL.revokeObjectURL(previewUrl);
+			previewUrl = URL.createObjectURL(blob);
+			setSlots(previewUrl);
 			say('Uploading…');
 			return upload(blob);
 		}).then(function (url) {
+			if (previewUrl) {
+				URL.revokeObjectURL(previewUrl);
+				previewUrl = null;
+			}
 			setSlots(url);
 			say('Profile photo updated.');
 		}).catch(function (err) {
 			say(err && err.message ? err.message : 'Upload failed.', true);
 		}).then(function () {
 			busy = false;
+			zone.removeAttribute('aria-busy');
 			if (input) input.value = '';
 		});
 	}

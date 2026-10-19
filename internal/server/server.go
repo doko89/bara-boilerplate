@@ -12,7 +12,7 @@ import (
 	"boilerplate/internal/features/auth"
 	"boilerplate/internal/features/dashboard"
 	"boilerplate/internal/features/landing"
-	"boilerplate/internal/features/settings"
+	"boilerplate/internal/features/profile"
 	"boilerplate/internal/features/uploads"
 	"boilerplate/internal/middleware"
 	"boilerplate/internal/session"
@@ -39,9 +39,9 @@ func New(cfg config.Config, db *gorm.DB, log *slog.Logger) http.Handler {
 	dashSvc := dashboard.NewService(manager)
 	dashboard.RegisterRoutes(mux, dashSvc)
 
-	settingsRepo := settings.NewRepository(db)
-	settingsSvc := settings.NewService(settingsRepo, manager)
-	settings.RegisterRoutes(mux, settingsSvc, avatarStore)
+	profileRepo := profile.NewRepository(db)
+	profileSvc := profile.NewService(profileRepo, manager)
+	profile.RegisterRoutes(mux, profileSvc, avatarStore)
 
 	adminRepo := admin.NewRepository(db)
 	adminSvc := admin.NewService(adminRepo, manager)

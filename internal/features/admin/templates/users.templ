@@ -24,7 +24,7 @@ templ UsersContent(d UsersData) {
 							<th>Role</th>
 							<th>Status</th>
 							<th>Joined</th>
-							<th><span class="sr-only">Actions</span></th>
+							<th class="th-actions">Action</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -67,54 +67,44 @@ templ UsersContent(d UsersData) {
 }
 
 templ userActions(d UsersData, u domain.User) {
-	<div class="dropdown-wrap" data-dropdown>
-		<button type="button" class="icon-btn" data-dropdown-toggle aria-label={ "Actions for " + u.Name } aria-haspopup="menu" aria-expanded="false">
-			@components.Icon("chevron-down", 16)
-		</button>
-		<div class="dropdown dropdown-right" role="menu">
-			if u.ID == d.CurrentUserID {
-				<p class="dropdown-note">This is your own account. Manage it from settings.</p>
-			} else {
-				<form method="post" action={ fmt.Sprintf("/admin/users/%d/role", u.ID) }>
-					@components.CSRFField(d.CSRF)
-					if u.IsAdmin() {
-						<input type="hidden" name="role" value="user"/>
-						<button type="submit" class="dropdown-item" role="menuitem">
-							@components.Icon("user", 16)
-							<span>Demote to user</span>
-						</button>
-					} else {
-						<input type="hidden" name="role" value="admin"/>
-						<button type="submit" class="dropdown-item" role="menuitem">
-							@components.Icon("shield", 16)
-							<span>Promote to admin</span>
-						</button>
-					}
-				</form>
-				<form method="post" action={ fmt.Sprintf("/admin/users/%d/status", u.ID) }>
-					@components.CSRFField(d.CSRF)
-					if u.IsActive {
-						<input type="hidden" name="active" value="false"/>
-						<button type="submit" class="dropdown-item" role="menuitem">
-							@components.Icon("lock", 16)
-							<span>Deactivate</span>
-						</button>
-					} else {
-						<input type="hidden" name="active" value="true"/>
-						<button type="submit" class="dropdown-item" role="menuitem">
-							@components.Icon("check", 16)
-							<span>Activate</span>
-						</button>
-					}
-				</form>
-				<form method="post" action={ fmt.Sprintf("/admin/users/%d/delete", u.ID) } data-confirm={ "Delete " + u.Name + "? This can't be undone." }>
-					@components.CSRFField(d.CSRF)
-					<button type="submit" class="dropdown-item danger" role="menuitem">
-						@components.Icon("trash", 16)
-						<span>Delete user</span>
+	if u.ID == d.CurrentUserID {
+		@components.Badge("You", "gray")
+	} else {
+		<div class="row-actions">
+			<form method="post" action={ fmt.Sprintf("/admin/users/%d/role", u.ID) }>
+				@components.CSRFField(d.CSRF)
+				if u.IsAdmin() {
+					<input type="hidden" name="role" value="user"/>
+					<button type="submit" class="icon-btn" title="Demote to user" aria-label={ "Demote " + u.Name + " to user" }>
+						@components.Icon("user", 16)
 					</button>
-				</form>
-			}
+				} else {
+					<input type="hidden" name="role" value="admin"/>
+					<button type="submit" class="icon-btn" title="Promote to admin" aria-label={ "Promote " + u.Name + " to admin" }>
+						@components.Icon("shield", 16)
+					</button>
+				}
+			</form>
+			<form method="post" action={ fmt.Sprintf("/admin/users/%d/status", u.ID) }>
+				@components.CSRFField(d.CSRF)
+				if u.IsActive {
+					<input type="hidden" name="active" value="false"/>
+					<button type="submit" class="icon-btn" title="Deactivate account" aria-label={ "Deactivate " + u.Name }>
+						@components.Icon("lock", 16)
+					</button>
+				} else {
+					<input type="hidden" name="active" value="true"/>
+					<button type="submit" class="icon-btn" title="Activate account" aria-label={ "Activate " + u.Name }>
+						@components.Icon("check", 16)
+					</button>
+				}
+			</form>
+			<form method="post" action={ fmt.Sprintf("/admin/users/%d/delete", u.ID) } data-confirm={ "Delete " + u.Name + "? This can't be undone." }>
+				@components.CSRFField(d.CSRF)
+				<button type="submit" class="icon-btn danger" title="Delete user" aria-label={ "Delete " + u.Name }>
+					@components.Icon("trash", 16)
+				</button>
+			</form>
 		</div>
-	</div>
+	}
 }

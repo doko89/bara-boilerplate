@@ -12,13 +12,13 @@ templ Base(title, theme, bodyClass string, css []string, scripts []string, conte
 			<meta name="color-scheme" content="light dark"/>
 			<title>{ title }</title>
 			<link rel="icon" type="image/svg+xml" href="/static/favicon.svg"/>
-			<link rel="stylesheet" href="/static/css/base.css"/>
+			<link rel="stylesheet" href={ "/static/css/base.css?v=" + StaticVersion }/>
 			for _, href := range css {
-				<link rel="stylesheet" href={ href }/>
+				<link rel="stylesheet" href={ href + "?v=" + StaticVersion }/>
 			}
-			<script src="/static/js/theme.js" defer></script>
+			<script src={ "/static/js/theme.js?v=" + StaticVersion } defer></script>
 			for _, src := range scripts {
-				<script src={ src } defer></script>
+				<script src={ src + "?v=" + StaticVersion } defer></script>
 			}
 		</head>
 		<body class={ bodyClass }>
@@ -64,9 +64,9 @@ templ AppShell(d AppPageData) {
 						<span class="profile-chevron">@Icon("chevron-down", 14)</span>
 					</button>
 					<div class="dropdown dropdown-up" role="menu">
-						<a class="dropdown-item" role="menuitem" href="/settings">
+						<a class="dropdown-item" role="menuitem" href="/profile">
 							@Icon("user", 16)
-							<span>Account information</span>
+							<span>Profile</span>
 						</a>
 						<form method="post" action="/logout">
 							@CSRFField(d.CSRF)

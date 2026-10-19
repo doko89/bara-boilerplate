@@ -10,6 +10,11 @@ import (
 	"github.com/a-h/templ"
 )
 
+// StaticVersion is appended to every local CSS/JS URL as ?v=. Static files
+// are served with a long Cache-Control, so bump this whenever anything under
+// web/static changes — otherwise browsers keep rendering the cached bytes.
+const StaticVersion = "5"
+
 // AppPageData wires everything the authenticated app shell needs.
 type AppPageData struct {
 	Title   string
@@ -48,7 +53,8 @@ func NavItems(role domain.Role) []NavItem {
 	if role == domain.RoleAdmin {
 		items = append(items, NavItem{ID: "users", Label: "Users", Href: "/admin/users", Icon: "users"})
 	}
-	return append(items, NavItem{ID: "settings", Label: "Settings", Href: "/settings", Icon: "sliders"})
+	// Profile lives only in the account dropdown (sidebar footer), not here.
+	return items
 }
 
 // AuthPanelCopy returns the marketing copy shown on the brand panel of each
