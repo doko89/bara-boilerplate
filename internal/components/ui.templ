@@ -135,6 +135,58 @@ templ Breadcrumb(items []Crumb) {
 	</nav>
 }
 
+// Button renders a themed button or, when Href is set, a link styled as one.
+templ Button(p ButtonProps) {
+	if p.Href != "" {
+		<a href={ p.Href } class={ buttonClass(p) }>
+			@ButtonLabel(p)
+		</a>
+	} else {
+		<button type={ buttonType(p) } class={ buttonClass(p) } disabled?={ p.Disabled }>
+			@ButtonLabel(p)
+		</button>
+	}
+}
+
+templ ButtonLabel(p ButtonProps) {
+	if p.Icon != "" {
+		@Icon(p.Icon, 16)
+	}
+	{ p.Label }
+}
+
+// Dropdown renders a small toggle button with a link menu, for selects such
+// as filters. The Selected item is highlighted as the current choice.
+templ Dropdown(p DropdownProps) {
+	<div class="dropdown-wrap" data-dropdown>
+		<button
+			type="button"
+			class="btn btn-secondary btn-sm"
+			data-dropdown-toggle
+			aria-haspopup="menu"
+			aria-expanded="false"
+			aria-label={ p.Label }
+		>
+			<span>{ p.Label }</span>
+			@Icon("chevron-down", 14)
+		</button>
+		<div class={ "dropdown", templ.KV("dropdown-up", p.Align == DropdownUp), templ.KV("dropdown-right", p.Align == DropdownRight) } role="menu">
+			for _, item := range p.Items {
+				<a
+					href={ item.Href }
+					class={ "dropdown-item", templ.KV("active", item.Selected) }
+					role="menuitem"
+				>
+					if item.Icon != "" {
+						@Icon(item.Icon, 16)
+					}
+					<span>{ item.Label }</span>
+				</a>
+			}
+		</div>
+	</div>
+}
+
 templ ErrorPage(code int, title, detail, theme string, user *domain.User) {
 	@Base(ErrorPageTitle(code), theme, "error-body", nil, nil, errorContent(code, title, detail, user))
 }
@@ -151,12 +203,12 @@ templ errorContent(code int, title, detail string, user *domain.User) {
 		<div class="error-actions">
 			if user != nil {
 				if user.IsAdmin() {
-					<a class="btn btn-primary" href="/admin">Back to dashboard</a>
+					@Button(ButtonProps{Label: "Back to dashboard", Href: "/admin"})
 				} else {
-					<a class="btn btn-primary" href="/dashboard">Back to dashboard</a>
+					@Button(ButtonProps{Label: "Back to dashboard", Href: "/dashboard"})
 				}
 			} else {
-				<a class="btn btn-primary" href="/">Back to home</a>
+				@Button(ButtonProps{Label: "Back to home", Href: "/"})
 			}
 		</div>
 	</main>

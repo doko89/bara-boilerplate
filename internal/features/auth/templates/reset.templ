@@ -28,7 +28,7 @@ templ ResetCard(d ResetData) {
 				@components.PasswordField("password", "New password", "password", "new-password", d.Errors["password"])
 				@components.PasswordField("confirm_password", "Confirm new password", "confirm_password", "new-password", d.Errors["confirm_password"])
 				@components.FormError(d.Errors["form"])
-				<button type="submit" class="btn btn-primary btn-block">Update password</button>
+				@components.Button(components.ButtonProps{Label: "Update password", Block: true})
 			</form>
 			<p class="auth-switch">Remembered it after all? <a href="/login">Sign in</a></p>
 		</div>
@@ -37,7 +37,7 @@ templ ResetCard(d ResetData) {
 			<span class="auth-state-icon">@components.Icon("alert", 20)</span>
 			<h1 class="auth-title">This link has expired</h1>
 			<p class="auth-sub">Reset links are single-use and valid for one hour. Request a fresh one and try again.</p>
-			<a class="btn btn-primary btn-block" href="/forgot-password">Request a new link</a>
+			@components.Button(components.ButtonProps{Label: "Request a new link", Href: "/forgot-password", Block: true})
 		</div>
 	}
 }

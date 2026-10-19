@@ -23,7 +23,7 @@ templ ProfileContent(d ProfileData) {
 				@components.PasswordField("confirm_password", "Confirm new password", "confirm_password", "new-password", d.Errors["confirm_password"])
 				@components.FormError(d.Errors["password_form"])
 				<div class="form-actions">
-					<button type="submit" class="btn btn-primary">Update password</button>
+					@components.Button(components.ButtonProps{Label: "Update password"})
 				</div>
 			</form>
 		</section>
@@ -66,7 +66,7 @@ templ ProfileContent(d ProfileData) {
 				@components.TextField("email", "Email", "email", "email", d.Email, "email", "", d.Errors["email"])
 				@components.FormError(d.Errors["profile_form"])
 				<div class="form-actions">
-					<button type="submit" class="btn btn-primary">Save changes</button>
+					@components.Button(components.ButtonProps{Label: "Save changes"})
 				</div>
 			</form>
 		</section>
@@ -80,7 +80,7 @@ templ ProfileContent(d ProfileData) {
 				if len(d.Sessions) > 1 {
 					<form method="post" action="/profile/sessions/revoke-others" data-confirm="Sign out all other sessions?">
 						@components.CSRFField(d.CSRF)
-						<button type="submit" class="btn btn-secondary btn-sm">Sign out other sessions</button>
+						@components.Button(components.ButtonProps{Label: "Sign out other sessions", Variant: components.ButtonSecondary, Size: components.ButtonSM})
 					</form>
 				}
 			</div>

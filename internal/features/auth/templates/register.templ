@@ -28,7 +28,7 @@ templ RegisterCard(d RegisterData) {
 			@components.PasswordField("password", "Password", "password", "new-password", d.Errors["password"])
 			@components.PasswordField("confirm_password", "Confirm password", "confirm_password", "new-password", d.Errors["confirm_password"])
 			@components.FormError(d.Errors["form"])
-			<button type="submit" class="btn btn-primary btn-block">Create account</button>
+			@components.Button(components.ButtonProps{Label: "Create account", Block: true})
 		</form>
 		<p class="auth-switch">Already have an account? <a href="/login">Sign in</a></p>
 	</div>

@@ -96,7 +96,11 @@ func LoginCard(d LoginData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button type=\"submit\" class=\"btn btn-primary btn-block\">Sign in</button></form><div class=\"auth-between\"><a class=\"link-muted\" href=\"/forgot-password\">Forgot password?</a></div><p class=\"auth-switch\">New to Bara? <a href=\"/register\">Create an account</a></p>")
+		templ_7745c5c3_Err = components.Button(components.ButtonProps{Label: "Sign in", Block: true}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</form><div class=\"auth-between\"><a class=\"link-muted\" href=\"/forgot-password\">Forgot password?</a></div><p class=\"auth-switch\">New to Bara? <a href=\"/register\">Create an account</a></p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

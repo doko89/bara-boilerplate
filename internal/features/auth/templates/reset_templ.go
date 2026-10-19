@@ -114,7 +114,11 @@ func ResetCard(d ResetData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<button type=\"submit\" class=\"btn btn-primary btn-block\">Update password</button></form><p class=\"auth-switch\">Remembered it after all? <a href=\"/login\">Sign in</a></p></div>")
+			templ_7745c5c3_Err = components.Button(components.ButtonProps{Label: "Update password", Block: true}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</form><p class=\"auth-switch\">Remembered it after all? <a href=\"/login\">Sign in</a></p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -127,7 +131,15 @@ func ResetCard(d ResetData) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</span><h1 class=\"auth-title\">This link has expired</h1><p class=\"auth-sub\">Reset links are single-use and valid for one hour. Request a fresh one and try again.</p><a class=\"btn btn-primary btn-block\" href=\"/forgot-password\">Request a new link</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</span><h1 class=\"auth-title\">This link has expired</h1><p class=\"auth-sub\">Reset links are single-use and valid for one hour. Request a fresh one and try again.</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = components.Button(components.ButtonProps{Label: "Request a new link", Href: "/forgot-password", Block: true}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

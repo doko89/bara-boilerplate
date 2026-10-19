@@ -13,7 +13,7 @@ import (
 // StaticVersion is appended to every local CSS/JS URL as ?v=. Static files
 // are served with a long Cache-Control, so bump this whenever anything under
 // web/static changes — otherwise browsers keep rendering the cached bytes.
-const StaticVersion = "9"
+const StaticVersion = "10"
 
 // AppPageData wires everything the authenticated app shell needs.
 type AppPageData struct {
@@ -52,6 +52,86 @@ type Crumb struct {
 	Label string
 	Href  string
 	Icon  string
+}
+
+type ButtonVariant string
+
+const (
+	ButtonPrimary   ButtonVariant = "primary"
+	ButtonSecondary ButtonVariant = "secondary"
+	ButtonInverse   ButtonVariant = "inverse"
+)
+
+type ButtonSize string
+
+const (
+	ButtonMD ButtonSize = "md"
+	ButtonSM ButtonSize = "sm"
+	ButtonLG ButtonSize = "lg"
+)
+
+// ButtonProps describes a themed button. Href renders an <a> instead of a
+// <button> (Type and Disabled then don't apply). Zero values render a medium
+// primary submit button.
+type ButtonProps struct {
+	Label    string
+	Href     string
+	Type     string
+	Variant  ButtonVariant
+	Size     ButtonSize
+	Block    bool
+	Disabled bool
+	Icon     string
+}
+
+func buttonType(p ButtonProps) string {
+	if p.Type != "" {
+		return p.Type
+	}
+	return "submit"
+}
+
+func buttonClass(p ButtonProps) string {
+	v := p.Variant
+	if v == "" {
+		v = ButtonPrimary
+	}
+	cls := "btn btn-" + string(v)
+	switch p.Size {
+	case ButtonSM:
+		cls += " btn-sm"
+	case ButtonLG:
+		cls += " btn-lg"
+	}
+	if p.Block {
+		cls += " btn-block"
+	}
+	return cls
+}
+
+type DropdownAlign string
+
+const (
+	DropdownDown  DropdownAlign = ""
+	DropdownUp    DropdownAlign = "up"
+	DropdownRight DropdownAlign = "right"
+)
+
+// DropdownItem is one link in a Dropdown menu. Selected marks the current
+// choice (e.g. the active filter).
+type DropdownItem struct {
+	Label    string
+	Href     string
+	Icon     string
+	Selected bool
+}
+
+// DropdownProps describes a toggle button with a link menu, for selects such
+// as filters. Behavior comes from the shared data-dropdown script.
+type DropdownProps struct {
+	Label string
+	Align DropdownAlign
+	Items []DropdownItem
 }
 
 func NavItems(role domain.Role) []NavItem {

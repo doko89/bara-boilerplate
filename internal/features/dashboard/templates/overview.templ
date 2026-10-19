@@ -24,7 +24,7 @@ templ OverviewContent(d OverviewData) {
 					<h3 class="card-title">Recent sign-ins</h3>
 					<p class="card-sub">The latest sessions created on this account.</p>
 				</div>
-				<a class="btn btn-secondary btn-sm" href="/profile">Manage sessions</a>
+				@components.Button(components.ButtonProps{Label: "Manage sessions", Href: "/profile", Variant: components.ButtonSecondary, Size: components.ButtonSM})
 			</div>
 			if len(d.Recent) == 0 {
 				@components.EmptyState("activity", "No sign-ins yet", "Sign-in activity will show up here after you log in from a device.")

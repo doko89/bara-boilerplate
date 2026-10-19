@@ -196,6 +196,11 @@
 	background: var(--primary-soft);
 }
 
+.dropdown-item.active {
+	color: var(--primary);
+	font-weight: 600;
+}
+
 .dropdown-note {
 	padding: 8px 10px;
 	font-size: 13px;

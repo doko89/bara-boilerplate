@@ -104,7 +104,11 @@ func RegisterCard(d RegisterData) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button type=\"submit\" class=\"btn btn-primary btn-block\">Create account</button></form><p class=\"auth-switch\">Already have an account? <a href=\"/login\">Sign in</a></p></div>")
+		templ_7745c5c3_Err = components.Button(components.ButtonProps{Label: "Create account", Block: true}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</form><p class=\"auth-switch\">Already have an account? <a href=\"/login\">Sign in</a></p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

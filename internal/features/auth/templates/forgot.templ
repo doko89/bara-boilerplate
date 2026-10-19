@@ -26,7 +26,7 @@ templ ForgotCard(d ForgotData) {
 			@components.CSRFField(d.CSRF)
 			@components.TextField("email", "Email", "email", "email", d.Email, "email", "you@company.com", d.Errors["email"])
 			@components.FormError(d.Errors["form"])
-			<button type="submit" class="btn btn-primary btn-block">Send reset link</button>
+			@components.Button(components.ButtonProps{Label: "Send reset link", Block: true})
 		</form>
 		<p class="auth-switch">Remembered it after all? <a href="/login">Sign in</a></p>
 	</div>

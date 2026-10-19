@@ -103,3 +103,73 @@ func TestAppShellRendersTopbarBreadcrumb(t *testing.T) {
 		t.Error("topbar without crumbs renders a breadcrumb")
 	}
 }
+
+// TestButtonRendersVariants locks the Button contract: zero values render a
+// medium primary submit, Href renders a link, and variant/size/block/disabled
+// map to the matching classes.
+func TestButtonRendersVariants(t *testing.T) {
+	render := func(p ButtonProps) string {
+		var sb strings.Builder
+		if err := Button(p).Render(context.Background(), &sb); err != nil {
+			t.Fatal(err)
+		}
+		return sb.String()
+	}
+
+	def := render(ButtonProps{Label: "Save"})
+	for _, want := range []string{`<button type="submit"`, `class="btn btn-primary"`, `>Save<`} {
+		if !strings.Contains(def, want) {
+			t.Errorf("default button missing %q", want)
+		}
+	}
+	if strings.Contains(def, "disabled") {
+		t.Error("default button must not be disabled")
+	}
+
+	link := render(ButtonProps{Label: "Manage", Href: "/admin/users", Variant: ButtonSecondary, Size: ButtonSM})
+	for _, want := range []string{`<a href="/admin/users"`, `class="btn btn-secondary btn-sm"`, `>Manage<`} {
+		if !strings.Contains(link, want) {
+			t.Errorf("link button missing %q", want)
+		}
+	}
+
+	full := render(ButtonProps{Label: "Go", Block: true, Disabled: true, Icon: "arrow-right", Type: "button"})
+	for _, want := range []string{`type="button"`, `btn-block`, `disabled`, `<svg class="icon"`} {
+		if !strings.Contains(full, want) {
+			t.Errorf("full button missing %q", want)
+		}
+	}
+}
+
+// TestDropdownRendersMenu locks the Dropdown contract: a toggle button wired
+// to the shared data-dropdown script plus a link menu where only the selected
+// item is highlighted.
+func TestDropdownRendersMenu(t *testing.T) {
+	var sb strings.Builder
+	p := DropdownProps{
+		Label: "Role: all",
+		Items: []DropdownItem{
+			{Label: "All", Href: "?role=", Selected: true},
+			{Label: "Admins", Href: "?role=admin", Icon: "shield"},
+		},
+	}
+	if err := Dropdown(p).Render(context.Background(), &sb); err != nil {
+		t.Fatal(err)
+	}
+	html := sb.String()
+	for _, want := range []string{
+		`data-dropdown-toggle`,
+		`aria-haspopup="menu"`,
+		`role="menu"`,
+		`>Role: all<`,
+		`class="dropdown-item active"`,
+		`href="?role=admin"`,
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("rendered dropdown missing %q", want)
+		}
+	}
+	if n := strings.Count(html, "dropdown-item active"); n != 1 {
+		t.Errorf("dropdown highlights %d items, want 1", n)
+	}
+}
