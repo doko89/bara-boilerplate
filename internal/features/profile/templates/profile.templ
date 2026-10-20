@@ -9,26 +9,7 @@ templ ProfileContent(d ProfileData) {
 		@components.FlashBanner(d.FlashType, d.FlashMsg)
 	}
 	<div class="profile-grid">
-		<section class="card" id="password" data-reveal aria-labelledby="password-title">
-			<div class="card-head">
-				<div>
-					<h3 class="card-title" id="password-title">Password</h3>
-					<p class="card-sub">Changing your password signs out every other session.</p>
-				</div>
-			</div>
-			<form class="form card-pad" method="post" action="/profile/password" novalidate>
-				@components.CSRFField(d.CSRF)
-				@components.PasswordField("current_password", "Current password", "current_password", "current-password", d.Errors["current_password"])
-				@components.PasswordField("password", "New password", "password", "new-password", d.Errors["password"])
-				@components.PasswordField("confirm_password", "Confirm new password", "confirm_password", "new-password", d.Errors["confirm_password"])
-				@components.FormError(d.Errors["password_form"])
-				<div class="form-actions">
-					@components.Button(components.ButtonProps{Label: "Update password"})
-				</div>
-			</form>
-		</section>
-
-		<section class="card" data-reveal data-reveal-delay="1" aria-labelledby="profile-title">
+		<section class="card" data-reveal aria-labelledby="profile-title">
 			<div class="card-head">
 				<div>
 					<h3 class="card-title" id="profile-title">Account information</h3>
@@ -67,6 +48,25 @@ templ ProfileContent(d ProfileData) {
 				@components.FormError(d.Errors["profile_form"])
 				<div class="form-actions">
 					@components.Button(components.ButtonProps{Label: "Save changes"})
+				</div>
+			</form>
+		</section>
+
+		<section class="card" id="password" data-reveal data-reveal-delay="1" aria-labelledby="password-title">
+			<div class="card-head">
+				<div>
+					<h3 class="card-title" id="password-title">Password</h3>
+					<p class="card-sub">Changing your password signs out every other session.</p>
+				</div>
+			</div>
+			<form class="form card-pad" method="post" action="/profile/password" novalidate>
+				@components.CSRFField(d.CSRF)
+				@components.PasswordField("current_password", "Current password", "current_password", "current-password", d.Errors["current_password"])
+				@components.PasswordField("password", "New password", "password", "new-password", d.Errors["password"])
+				@components.PasswordField("confirm_password", "Confirm new password", "confirm_password", "new-password", d.Errors["confirm_password"])
+				@components.FormError(d.Errors["password_form"])
+				<div class="form-actions">
+					@components.Button(components.ButtonProps{Label: "Update password"})
 				</div>
 			</form>
 		</section>

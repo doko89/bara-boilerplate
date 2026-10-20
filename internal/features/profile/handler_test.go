@@ -77,14 +77,14 @@ func TestProfileContentFormActions(t *testing.T) {
 	if strings.Contains(html, "Cropped square") {
 		t.Error("rendered profile page still contains the removed avatar help text")
 	}
-	// Sections render in visual 2-column order: password, account (with the
-	// avatar), then full-width sessions. DOM order matches so keyboard tab
+	// Sections render in visual 2-column order: account (with the avatar),
+	// password, then full-width sessions. DOM order matches so keyboard tab
 	// order follows the layout.
 	if strings.Contains(html, `id="avatar-title"`) {
 		t.Error("rendered profile page still contains the removed photo section")
 	}
 	last := -1
-	for _, id := range []string{"password-title", "profile-title", "sessions-title"} {
+	for _, id := range []string{"profile-title", "password-title", "sessions-title"} {
 		i := strings.Index(html, `id="`+id+`"`)
 		if i < 0 {
 			t.Fatalf("rendered profile page missing %q", id)
